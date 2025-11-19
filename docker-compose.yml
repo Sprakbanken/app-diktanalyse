@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_DEBUG=True
+      - MAX_WORKERS=4
+    volumes:
+      # Mount source code for development (hot reload)
+      - ./app.py:/app/app.py
+      - ./tasks.py:/app/tasks.py
+      - ./config.py:/app/config.py
+      - ./templates:/app/templates
+      - ./static:/app/static
+    restart: unless-stopped
