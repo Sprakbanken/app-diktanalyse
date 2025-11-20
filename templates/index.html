@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computational Task Processor</title>
+    <title>Diktanalyse</title>
+    <link rel="icon" type="image/svg+xml" href="/static/NB_logo_sort.svg">
     <style>
         * {
             margin: 0;
@@ -339,19 +340,18 @@
 </head>
 <body>
     <div class="container">
-        <h1>📜 Hvilket dikt vil du analysere?</h1>
-        <p class="subtitle">...</p>
+        <h1>Diktanalyse</h1>
         
         <div class="input-group">
-            <label>Velg tekstkilde</label>
+            <label>🕵️‍♀️Hvilket dikt vil du analysere? </label>
             <div class="radio-group">
                 <div class="radio-option">
                     <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()">
-                    <label for="nornDikt">Norn Dikt</label>
+                    <label for="nornDikt">📚 Norn Dikt</label>
                 </div>
                 <div class="radio-option">
                     <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()" checked>
-                    <label for="egenTekst">Lim inn tekst</label>
+                    <label for="egenTekst">📝 Fyll inn tekst </label>
                 </div>
             </div>
         </div>
@@ -359,14 +359,7 @@
         <!-- Dropdown for predefined poems -->
         <div id="nornDiktContainer" class="input-group hidden">
             <label for="poemSelect">Velg et dikt:</label>
-            <select id="poemSelect">
-                <option value="">-- Velg et dikt --</option>
-                <option value="poem1">Nordmannen - Bjørnstjerne Bjørnson</option>
-                <option value="poem2">Terje Vigen - Henrik Ibsen</option>
-                <option value="poem3">Hvite kors - Arnulf Øverland</option>
-                <option value="poem4">Jeg elsker - Inger Hagerup</option>
-                <option value="poem5">Det er den draum - Olav H. Hauge</option>
-            </select>
+            <select id="poemSelect"></select>
         </div>
         
         <!-- Text area for custom text -->
@@ -375,7 +368,7 @@
             <textarea id="customText" placeholder="Skriv ditt dikt her..."></textarea>
         </div>
         
-        <button id="submitBtn" onclick="submitTask()">Analyser tekst</button>
+        <button id="submitBtn" onclick="submitTask()">Annoter diktet</button>
         
         <div id="resultContainer" class="result-container">
             <div id="statusMessage" class="status"></div>
