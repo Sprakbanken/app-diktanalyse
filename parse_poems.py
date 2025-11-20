@@ -14,6 +14,80 @@ REPO_OWNER = "norn-uio"
 REPO_NAME = "norn-poems"
 REPO_PATH = "TEI"  # Path to XML files in the repository
 
+# PoeTree API configuration
+POETREE_API_BASE = "https://versologie.cz/poetree/api"
+
+
+def fetch_poetree_poems(max_poems: Optional[int] = None) -> List[Dict]:
+    """
+    Fetch poems from the PoeTree API.
+
+    Args:
+        max_poems: Maximum number of poems to fetch (None for all)
+
+    Returns:
+        List of poem dictionaries with metadata
+    """
+    url = f"{POETREE_API_BASE}/poems"
+
+    try:
+        print(f"Fetching poems from PoeTree API: {url}")
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+
+        poems = response.json()
+
+        if not isinstance(poems, list):
+            print(f"Unexpected response format: {type(poems)}")
+            return []
+
+        print(f"Fetched {len(poems)} poems from PoeTree API")
+
+        if max_poems:
+            poems = poems[:max_poems]
+            print(f"Limited to {len(poems)} poems")
+
+        return poems
+
+    except requests.RequestException as e:
+        print(f"Error fetching poems from PoeTree API: {e}")
+        return []
+
+
+def process_poetree_poems(poems: List[Dict]) -> Dict[str, Dict]:
+    """
+    Process PoeTree API poems into the format used by the app.
+
+    Args:
+        poems: List of poem dictionaries from PoeTree API
+
+    Returns:
+        Dictionary mapping display labels to poem metadata
+    """
+    poem_data = {}
+
+    for idx, poem in enumerate(poems):
+        # Extract metadata from PoeTree format
+        title = poem.get("title", f"Untitled {idx}")
+        author = poem.get("author", "Unknown")
+        year = poem.get("year", "")
+        poem_id = poem.get("id", idx)
+        text = poem.get("text", "")
+
+        # Create dropdown label
+        dropdown_label = f"{title} - {author}"
+
+        poem_data[dropdown_label] = {
+            "id": poem_id,
+            "title": title,
+            "author": author,
+            "year": str(year) if year else "",
+            "text": text,
+            "source": "poetree",
+        }
+
+    return poem_data
+
 
 def fetch_github_repo_contents(
     owner: str = REPO_OWNER,
@@ -292,47 +366,60 @@ def main():
     """Generate poem data and save to JSON file"""
     import sys
 
-    # Check if user wants to fetch from GitHub
+    # Check command line arguments
     use_github = "--github" in sys.argv
-    max_files = 5  # Default limit
+    use_poetree = "--poetree" in sys.argv
+    max_items = 10  # Default limit
 
-    # Check for custom file limit
+    # Check for custom limit
     for arg in sys.argv:
-        if arg.startswith("--max-files="):
+        if arg.startswith("--max="):
             try:
-                max_files = int(arg.split("=")[1])
+                max_items = int(arg.split("=")[1])
             except ValueError:
-                print(f"Invalid max-files value: {arg}")
+                print(f"Invalid max value: {arg}")
 
-    if use_github:
+    poem_data = {}
+
+    if use_poetree:
+        print("Fetching poems from PoeTree API...")
+        poems = fetch_poetree_poems(max_poems=max_items)
+
+        if poems:
+            poem_data = process_poetree_poems(poems)
+        else:
+            print("Failed to fetch from PoeTree API, falling back to sample data")
+            poem_data = create_poem_dropdown_data()
+
+    elif use_github:
         print("Fetching poems from GitHub API...")
-        poem_collections = fetch_poems_from_github(max_files=max_files)
+        poem_collections = fetch_poems_from_github(max_files=max_items)
 
         if not poem_collections:
             print("Failed to fetch from GitHub, falling back to sample data")
             poem_collections = SAMPLE_POEMS
+
+        # Create dropdown data from GitHub collections
+        for file_name, book_data in poem_collections.items():
+            author = book_data["author"]
+
+            # Add each poem from the collection
+            for idx, poem_title in enumerate(book_data["poems"][:15]):
+                dropdown_label = f"{poem_title} - {author}"
+                poem_data[dropdown_label] = {
+                    "file": file_name,
+                    "book_title": book_data["book_title"],
+                    "year": book_data["year"],
+                    "poem_index": idx,
+                    "source": "github",
+                }
     else:
-        print("Using embedded sample data (use --github to fetch from repository)")
-        poem_collections = SAMPLE_POEMS
+        print("Using embedded sample data")
+        print("Use --poetree to fetch from PoeTree API")
+        print("Use --github to fetch from GitHub repository")
+        poem_data = create_poem_dropdown_data()
 
-    # Create dropdown data from whichever source was used
-    poem_data = {}
-    for file_name, book_data in poem_collections.items():
-        author = book_data["author"]
-
-        # Add each poem from the collection
-        for idx, poem_title in enumerate(book_data["poems"][:15]):
-            dropdown_label = f"{poem_title} - {author}"
-            poem_data[dropdown_label] = {
-                "file": file_name,
-                "book_title": book_data["book_title"],
-                "year": book_data["year"],
-                "poem_index": idx,
-            }
-
-    print(
-        f"\nGenerated {len(poem_data)} poems from {len(poem_collections)} collections"
-    )
+    print(f"\nGenerated {len(poem_data)} poems")
     print("\nSample entries:")
     for label in list(poem_data.keys())[:5]:
         print(f"  - {label}")
