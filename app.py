@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import uuid
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from tasks import process_computation
+from tasks import process_text
 
 app = Flask(__name__)
 
@@ -35,7 +35,7 @@ def submit_task():
     task_status[task_id] = "processing"
 
     # Submit task to thread pool
-    executor.submit(process_computation, user_input, task_id, task_results, task_status)
+    executor.submit(process_text, user_input, task_id, task_results, task_status)
 
     return jsonify({"task_id": task_id, "status": "processing"})
 

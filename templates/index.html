@@ -195,6 +195,131 @@
             word-wrap: break-word;
         }
         
+        .annotation-options {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .annotation-options label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .checkbox-option label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+        
+        .text-display {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .text-line {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .line-number {
+            min-width: 40px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-right: 15px;
+            text-align: right;
+            user-select: none;
+        }
+        
+        .rhyme-tag {
+            min-width: 25px;
+            color: #666;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 5px;
+            text-align: right;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex: 1;
+        }
+        
+        .highlight-rhyme-a {
+            background-color: #cce5ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-b {
+            background-color: #d4edda;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-c {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-d {
+            background-color: #ffe5cc;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-e {
+            background-color: #f8d7da;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-f {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-bokstavrim {
+            background-color: #cce5ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-anafor {
+            background-color: #cce5ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
         .spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #667eea;
@@ -254,7 +379,27 @@
         <div id="resultContainer" class="result-container">
             <div id="statusMessage" class="status"></div>
             <div id="spinner" class="spinner" style="display: none;"></div>
-            <div id="resultData" class="result-data"></div>
+            
+            <div id="annotationOptions" class="annotation-options" style="display: none;">
+                <label>Velg annotasjonstype:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showEnderim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showEnderim">Enderim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showBokstavrim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showBokstavrim">Bokstavrim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showAnafor" checked onchange="updateAnnotationDisplay()">
+                        <label for="showAnafor">Anafor</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="textDisplay" class="text-display" style="display: none;"></div>
+            <div id="resultData" class="result-data" style="display: none;"></div>
         </div>
     </div>
     
@@ -338,15 +483,18 @@
             const resultContainer = document.getElementById('resultContainer');
             const statusMessage = document.getElementById('statusMessage');
             const spinner = document.getElementById('spinner');
-            const resultData = document.getElementById('resultData');
+            const annotationOptions = document.getElementById('annotationOptions');
+            const textDisplay = document.getElementById('textDisplay');
             
             // Disable button and show loading
             submitBtn.disabled = true;
             resultContainer.classList.add('show');
             statusMessage.className = 'status processing';
-            statusMessage.textContent = 'Processing...';
+            statusMessage.textContent = 'Analyserer tekst...';
             spinner.style.display = 'block';
-            resultData.textContent = '';
+            annotationOptions.style.display = 'none';
+            textDisplay.style.display = 'none';
+            analysisResult = null;
             
             try {
                 // Submit task
@@ -376,6 +524,8 @@
             }
         }
         
+        let analysisResult = null; // Store the full analysis result
+        
         async function checkResult() {
             if (!currentTaskId) return;
             
@@ -388,14 +538,22 @@
                     
                     const statusMessage = document.getElementById('statusMessage');
                     const spinner = document.getElementById('spinner');
-                    const resultData = document.getElementById('resultData');
                     const submitBtn = document.getElementById('submitBtn');
+                    const annotationOptions = document.getElementById('annotationOptions');
+                    const textDisplay = document.getElementById('textDisplay');
                     
                     statusMessage.className = 'status completed';
-                    statusMessage.textContent = '✓ Processing Complete';
+                    statusMessage.textContent = '✓ Analysen er ferdig';
                     spinner.style.display = 'none';
-                    resultData.textContent = JSON.stringify(data.result, null, 2);
                     submitBtn.disabled = false;
+                    
+                    // Store result and display it
+                    analysisResult = data.result;
+                    annotationOptions.style.display = 'block';
+                    textDisplay.style.display = 'block';
+                    
+                    // Display the annotated text
+                    updateAnnotationDisplay();
                 }
                 
             } catch (error) {
@@ -410,6 +568,130 @@
                 spinner.style.display = 'none';
                 submitBtn.disabled = false;
             }
+        }
+        
+        function updateAnnotationDisplay() {
+            if (!analysisResult) return;
+            
+            const showEnderim = document.getElementById('showEnderim').checked;
+            const showBokstavrim = document.getElementById('showBokstavrim').checked;
+            const showAnafor = document.getElementById('showAnafor').checked;
+            const textDisplay = document.getElementById('textDisplay');
+            
+            // Split text into lines
+            const lines = analysisResult.text.split('\n');
+            
+            // Build a map of absolute line index to verse data
+            const verseMap = {};
+            if (showEnderim && analysisResult.end_rhymes) {
+                let absoluteLineIndex = 0;
+                for (const stanza of analysisResult.end_rhymes) {
+                    for (const verse of stanza.verses) {
+                        verseMap[absoluteLineIndex] = {
+                            rhyme_tag: verse.rhyme_tag.toUpperCase(),
+                            last_token: verse.last_token
+                        };
+                        absoluteLineIndex++;
+                    }
+                }
+            }
+            
+            // Create annotated HTML
+            let html = '';
+            let lineNumber = 0;
+            let absoluteLineIndex = 0;
+            
+            lines.forEach((line, index) => {
+                let lineContent = escapeHtml(line);
+                
+                // Only increment line number for non-empty lines
+                let displayLineNumber = '';
+                let rhymeTag = '';
+                
+                if (line.trim()) {
+                    displayLineNumber = ++lineNumber;
+                    
+                    // Get verse data for this line
+                    const verseData = verseMap[absoluteLineIndex];
+                    if (verseData) {
+                        rhymeTag = verseData.rhyme_tag;
+                        
+                        // Apply end rhyme highlighting with color based on rhyme tag
+                        if (showEnderim && verseData.last_token) {
+                            const rhymeClass = `highlight-rhyme-${verseData.rhyme_tag.toLowerCase()}`;
+                            const regex = new RegExp(`\\b(${escapeRegex(verseData.last_token)})\\b`, 'gi');
+                            lineContent = lineContent.replace(regex, `<span class="${rhymeClass}">$1</span>`);
+                        }
+                    }
+                    
+                    absoluteLineIndex++;
+                }
+                
+                // Apply other annotations
+                if (showBokstavrim && analysisResult.alliteration && displayLineNumber) {
+                    lineContent = applyAlliterationAnnotations(lineContent, displayLineNumber, analysisResult.alliteration);
+                }
+                
+                if (showAnafor && analysisResult.anaphora && displayLineNumber) {
+                    lineContent = applyAnaphoraAnnotations(lineContent, displayLineNumber, analysisResult.anaphora);
+                }
+                
+                html += `<div class="text-line">`;
+                html += `<span class="rhyme-tag">${rhymeTag}</span>`;
+                html += `<span class="line-number">${displayLineNumber}</span>`;
+                html += `<span class="line-content">${lineContent || '&nbsp;'}</span>`;
+                html += `</div>`;
+            });
+            
+            textDisplay.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function applyAlliterationAnnotations(lineContent, lineNumber, alliterations) {
+            if (!lineNumber || !alliterations || alliterations.length === 0) return lineContent;
+            
+            // Collect all alliterating words from all groups
+            const alliteratingWords = new Set();
+            for (const group of alliterations) {
+                if (Array.isArray(group)) {
+                    group.forEach(word => alliteratingWords.add(word.toLowerCase()));
+                }
+            }
+            
+            // Highlight all alliterating words in the current line
+            if (alliteratingWords.size > 0) {
+                const words = Array.from(alliteratingWords).map(escapeRegex).join('|');
+                const regex = new RegExp(`\\b(${words})\\b`, 'gi');
+                lineContent = lineContent.replace(regex, '<span class="highlight-bokstavrim">$1</span>');
+            }
+            
+            return lineContent;
+        }
+        
+        function applyAnaphoraAnnotations(lineContent, lineNumber, anaphoras) {
+            if (!lineNumber || !anaphoras || anaphoras.length === 0) return lineContent;
+            
+            // Find anaphoras that apply to this line (lineNumber - 1 for 0-indexed)
+            const lineIndex = lineNumber - 1;
+            
+            for (const anaphora of anaphoras) {
+                if (anaphora.line_id && anaphora.line_id.includes(lineIndex) && anaphora.phrase) {
+                    // Highlight the anaphora phrase at the start of the line
+                    const regex = new RegExp(`^(${escapeRegex(anaphora.phrase)})\\b`, 'i');
+                    lineContent = lineContent.replace(regex, '<span class="highlight-anafor">$1</span>');
+                }
+            }
+            
+            return lineContent;
+        }
+        
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
         
         // Initialize on page load
