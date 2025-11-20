@@ -336,9 +336,194 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .info-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+        
+        .info-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: auto;
+            transition: color 0.2s;
+        }
+        
+        .close-button:hover {
+            color: #333;
+            transform: none;
+        }
+        
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .modal h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .modal p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .modal a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .modal a:hover {
+            text-decoration: underline;
+        }
+        
+        .citation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Info Icon -->
+    <div class="info-icon" onclick="openInfoModal()" title="Om appen">ℹ</div>
+    
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal" onclick="closeInfoModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="closeInfoModal()">&times;</button>
+            <h2>Om Diktanalyse-appen</h2>
+            
+            <p>Denne appen analyserer dikt og identifiserer litterære virkemidler som enderim, bokstavrim og anafor.</p>
+            
+            <h3>Ressurser og referanser</h3>
+            
+            <p><strong>1. Poetry Analysis Python Library</strong></p>
+            <p>Appen bruker poetry-analysis biblioteket for tekstanalyse.</p>
+            <p><a href="https://norn-uio.github.io/poetry-analysis/" target="_blank">https://norn-uio.github.io/poetry-analysis/</a></p>
+            
+            <p><strong>2. PoeTree: Poetry Treebanks</strong></p>
+            <p>PoeTree er en flerspråklig samling av poesitreebanks som gjør det mulig å hente fullstendige dikt og metadata via API.</p>
+            <div class="citation">@article{poetree2024,
+  author     = {Petr Plecháč and Silvie Cinková and Robert Kolár and 
+                Artjoms Šeļa and Mirella De Sisto and Lara Nugues and 
+                Thomas Haider and Neža Kočnik},
+  title      = {PoeTree: Poetry Treebanks in Czech, English, French, 
+                German, Hungarian, Italian, Portuguese, Russian, 
+                Slovenian and Spanish},
+  journal    = {Research Data Journal for the Humanities and Social Sciences},
+  year       = {2024},
+  publisher  = {Brill},
+  address    = {Leiden, The Netherlands},
+  doi        = {10.1163/24523666-bja10044},
+  pages      = {1--17},
+  url        = {https://brill.com/view/journals/rdj/aop/article-10.1163-24523666-bja10044/article-10.1163-24523666-bja10044.xml}
+}</div>
+            
+            <p><strong>3. PoeTree.no: Norwegian Poetry Corpus</strong></p>
+            <p>PoeTree.no er et norsk poesikorpus fra 1890-tallet.</p>
+            <div class="citation">@inproceedings{poetree_no,
+  address   = {Aarhus, Denmark},
+  series    = {CEUR Workshop Proceedings},
+  title     = {Rediscovering the 1890s: A Norwegian Poetry Corpus},
+  volume    = {3834},
+  url       = {https://ceur-ws.org/Vol-3834/#paper24},
+  booktitle = {Proceedings of the Computational Humanities Research 
+               Conference 2024},
+  publisher = {CEUR},
+  author    = {Kvinnsland, Ranveig and Dale, Ingerid Løyning and 
+               Tungland, Lars Magne},
+  editor    = {Haverals, Wouter and Koolen, Marijn and Thompson, Laure},
+  year      = {2024},
+  pages     = {1259--1271}
+}</div>
+        </div>
+    </div>
+    
     <div class="container">
         <h1>Diktanalyse</h1>
         
@@ -689,6 +874,24 @@
         function escapeRegex(str) {
             return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
+        
+        function openInfoModal() {
+            document.getElementById('infoModal').classList.add('show');
+        }
+        
+        function closeInfoModal(event) {
+            // Close if clicking on the overlay or close button
+            if (!event || event.target.id === 'infoModal' || event.target.classList.contains('close-button')) {
+                document.getElementById('infoModal').classList.remove('show');
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeInfoModal();
+            }
+        });
         
         // Initialize on page load
         toggleInputType();
