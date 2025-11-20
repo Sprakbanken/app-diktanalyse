@@ -312,6 +312,7 @@
             background-color: #cce5ff;
             padding: 2px 4px;
             border-radius: 3px;
+            font-weight: bold;
         }
         
         .highlight-anafor {
@@ -624,16 +625,17 @@
                         }
                     }
                     
+                    // Apply alliteration annotations (use index, which includes empty lines)
+                    if (showBokstavrim && analysisResult.alliteration) {
+                        lineContent = applyAlliterationAnnotations(lineContent, index, analysisResult.alliteration);
+                    }
+                    
+                    // Apply anaphora annotations (use index, which includes empty lines)
+                    if (showAnafor && analysisResult.anaphora) {
+                        lineContent = applyAnaphoraAnnotations(lineContent, index, analysisResult.anaphora);
+                    }
+                    
                     absoluteLineIndex++;
-                }
-                
-                // Apply other annotations
-                if (showBokstavrim && analysisResult.alliteration && displayLineNumber) {
-                    lineContent = applyAlliterationAnnotations(lineContent, displayLineNumber, analysisResult.alliteration);
-                }
-                
-                if (showAnafor && analysisResult.anaphora && displayLineNumber) {
-                    lineContent = applyAnaphoraAnnotations(lineContent, displayLineNumber, analysisResult.anaphora);
                 }
                 
                 html += `<div class="text-line">`;
@@ -652,35 +654,36 @@
             return div.innerHTML;
         }
         
-        function applyAlliterationAnnotations(lineContent, lineNumber, alliterations) {
-            if (!lineNumber || !alliterations || alliterations.length === 0) return lineContent;
+        function applyAlliterationAnnotations(lineContent, absoluteLineIndex, alliterations) {
+            if (absoluteLineIndex === undefined || !alliterations || alliterations.length === 0) return lineContent;
             
-            // Collect all alliterating words from all groups
+            // Collect all alliterating words for this line
             const alliteratingWords = new Set();
-            for (const group of alliterations) {
-                if (Array.isArray(group)) {
-                    group.forEach(word => alliteratingWords.add(word.toLowerCase()));
+            for (const allitItem of alliterations) {
+                if (allitItem.line === absoluteLineIndex && allitItem.words) {
+                    allitItem.words.forEach(word => alliteratingWords.add(word.toLowerCase()));
                 }
             }
             
-            // Highlight all alliterating words in the current line
+            // Highlight only the initial letter of alliterating words
             if (alliteratingWords.size > 0) {
                 const words = Array.from(alliteratingWords).map(escapeRegex).join('|');
+                // Match word boundary, capture first letter, then rest of word
                 const regex = new RegExp(`\\b(${words})\\b`, 'gi');
-                lineContent = lineContent.replace(regex, '<span class="highlight-bokstavrim">$1</span>');
+                lineContent = lineContent.replace(regex, (match) => {
+                    return '<span class="highlight-bokstavrim">' + match.charAt(0) + '</span>' + match.slice(1);
+                });
             }
             
             return lineContent;
         }
         
-        function applyAnaphoraAnnotations(lineContent, lineNumber, anaphoras) {
-            if (!lineNumber || !anaphoras || anaphoras.length === 0) return lineContent;
+        function applyAnaphoraAnnotations(lineContent, absoluteLineIndex, anaphoras) {
+            if (absoluteLineIndex === undefined || !anaphoras || anaphoras.length === 0) return lineContent;
             
-            // Find anaphoras that apply to this line (lineNumber - 1 for 0-indexed)
-            const lineIndex = lineNumber - 1;
-            
+            // Find anaphoras that apply to this line
             for (const anaphora of anaphoras) {
-                if (anaphora.line_id && anaphora.line_id.includes(lineIndex) && anaphora.phrase) {
+                if (anaphora.line_id && anaphora.line_id.includes(absoluteLineIndex) && anaphora.phrase) {
                     // Highlight the anaphora phrase at the start of the line
                     const regex = new RegExp(`^(${escapeRegex(anaphora.phrase)})\\b`, 'i');
                     lineContent = lineContent.replace(regex, '<span class="highlight-anafor">$1</span>');
