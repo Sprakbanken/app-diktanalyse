@@ -8,14 +8,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies (from pyproject.toml)
+COPY pyproject.toml ./
 RUN uv venv
-RUN uv pip install \
-	flask>=3.1.2 \
-	poetree>=0.0.2 \
-	poetry-analysis>=0.3.14 \
-	python-dotenv>=1.2.1 \
-	requests>=2.32.0 \
-	gunicorn>=23.0.0
+RUN uv pip install -r pyproject.toml
 
 # Copy application code
 COPY app.py tasks.py config.py ./
