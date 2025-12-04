@@ -300,8 +300,7 @@ def enrich_poem_data_from_github(poem_collections: dict) -> Dict[str, Dict]:
         author = book_data["author"]
 
         # Add each poem from the collection
-        # TODO: remove cutoff slice at 15 poems
-        for idx, poem_title in enumerate(book_data["poems"][:15]):
+        for idx, poem_title in enumerate(book_data["poems"]):
             dropdown_label = f"{poem_title} - {author}"
             poem_data[dropdown_label] = {
                 "file": file_name,
