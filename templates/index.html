@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diktanalyse</title>
     <link rel="icon" type="image/svg+xml" href="/static/NB_logo_sort.svg">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         * {
             margin: 0;
@@ -202,6 +203,38 @@
             background: white;
             border-radius: 4px;
         }
+
+        .metadata-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .metadata-info h2 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .metadata-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+            font-size: 20px;
+            line-height: 1;
+            color: #667eea;
+        }
         
         .annotation-options label {
             display: block;
@@ -304,6 +337,65 @@
         }
         
         .highlight-rhyme-f {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-g {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-h {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-i {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-j {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-k {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-l {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-m {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-n {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-o {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .highlight-rhyme-p {
             background-color: #e2d9f3;
             padding: 2px 4px;
             border-radius: 3px;
@@ -519,13 +611,11 @@
         
         <!-- Dropdown for predefined poems -->
         <div id="nornDiktContainer" class="input-group hidden">
-            <label for="poemSelect">Velg et dikt:</label>
             <select id="poemSelect"></select>
         </div>
         
         <!-- Text area for custom text -->
         <div id="egenTekstContainer" class="input-group">
-            <label for="customText">Skriv eller lim inn teksten din:</label>
             <textarea id="customText" placeholder="Skriv ditt dikt her..."></textarea>
         </div>
         
@@ -535,8 +625,10 @@
             <div id="statusMessage" class="status"></div>
             <div id="spinner" class="spinner" style="display: none;"></div>
             
+            <div id="metadataInfo" class="metadata-info" style="display: none;"></div>
+
             <div id="annotationOptions" class="annotation-options" style="display: none;">
-                <label>Velg annotasjonstype:</label>
+                <label>Vis annotasjoner:</label>
                 <div class="checkbox-group">
                     <div class="checkbox-option">
                         <input type="checkbox" id="showEnderim" checked onchange="updateAnnotationDisplay()">
@@ -708,6 +800,7 @@
                     
                     // Store result and display it
                     analysisResult = data.result;
+                    updateMetadataInfo();
                     annotationOptions.style.display = 'block';
                     textDisplay.style.display = 'block';
                     
@@ -728,6 +821,43 @@
                 submitBtn.disabled = false;
             }
         }
+                function updateMetadataInfo() {
+                    const metaDiv = document.getElementById('metadataInfo');
+                    const nornDikt = document.getElementById('nornDikt').checked;
+                    if (!metaDiv) return;
+                    if (nornDikt) {
+                        const selectedLabel = document.getElementById('poemSelect').value;
+                        const meta = poems[selectedLabel];
+                        if (meta) {
+                            const title = meta.title || (selectedLabel.split(' - ')[0] || '');
+                            const author = meta.author || (selectedLabel.split(' - ')[1] || '');
+                            const book = meta.book_title || '';
+                            const year = meta.year || '';
+
+                            // Derive lifespan if present in metadata or within author string
+                            let lifespan = '';
+                            const by = meta.author_birth_year || meta.birth_year; // flexible keys
+                            const dy = meta.author_death_year || meta.death_year;
+                            if (by && dy) {
+                                lifespan = `(${by} - ${dy})`;
+                            } else if (author) {
+                                const m = author.match(/\((\d{3,4})\s*[-–]\s*(\d{3,4})\)/);
+                                if (m) lifespan = `(${m[1]} - ${m[2]})`;
+                            }
+
+                            const rows = [];
+                            if (title) rows.push(`<h2>${escapeHtml(title)}</h2>`);
+                            if (author) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">person<\/span> ${escapeHtml(author)}${lifespan ? ' ' + escapeHtml(lifespan) : ''}</div>`);
+                            if (book) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">book_5<\/span> ${escapeHtml(book)}</div>`);
+                            if (year) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">calendar_month<\/span> ${escapeHtml(year)}</div>`);
+
+                            metaDiv.innerHTML = rows.join('');
+                            metaDiv.style.display = rows.length ? 'block' : 'none';
+                            return;
+                        }
+                    }
+                    metaDiv.style.display = 'none';
+                }
         
         function updateAnnotationDisplay() {
             if (!analysisResult) return;
