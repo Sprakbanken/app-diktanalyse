@@ -4,11 +4,8 @@ A Python web application that annotates end rhymes, anaphora and alliteration in
 
 ## Features
 
-- **Flask Web Interface**: Simple and intuitive UI for submitting tasks
-- **Background Processing**: Uses Python threading for asynchronous task execution
-- **Real-time Updates**: Polling mechanism to check task status
-- **Computational Operations**: Performs various mathematical and text analysis operations
-- **No External Dependencies**: No Redis or message broker required
+- **Optional text input**: Choose poem from the [NORN Poems](https://github.com/norn-uio/norn-poems) corpus, or fill in optional text input
+- **Poetry analysis**: Annotate and view end rhymes, anaphora and alliterations in the chosen text
 
 ## Architecture
 

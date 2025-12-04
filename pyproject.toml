@@ -1,12 +1,14 @@
 [project]
-name = "poetry-analysis-app"
+name = "diktanalyse"
 version = "0.1.0"
 description = "A Python web application that annotates end rhymes, anaphora and alliteration in poetry."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "flask>=3.1.2",
+    "poetree>=0.0.2",
     "poetry-analysis>=0.3.14",
     "python-dotenv>=1.2.1",
     "requests>=2.32.0",
+    "gunicorn>=23.0.0",
 ]

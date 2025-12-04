@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computational Task Processor</title>
+    <title>Diktanalyse</title>
+    <link rel="icon" type="image/svg+xml" href="/static/NB_logo_sort.svg">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         * {
             margin: 0;
@@ -195,6 +197,215 @@
             word-wrap: break-word;
         }
         
+        .annotation-options {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .metadata-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .metadata-info h2 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .metadata-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24;
+            font-size: 20px;
+            line-height: 1;
+            color: #667eea;
+        }
+        
+        .annotation-options label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-option input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .checkbox-option label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+        
+        .text-display {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        .text-line {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .line-number {
+            min-width: 40px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-right: 15px;
+            text-align: right;
+            user-select: none;
+        }
+        
+        .rhyme-tag {
+            min-width: 25px;
+            color: #666;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 5px;
+            text-align: right;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex: 1;
+        }
+        
+        .highlight-rhyme-a {
+            background-color: #febebc; /* distinct from bokstavrim */
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-b {
+            background-color: #d4edda;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-c {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-d {
+            background-color: #fbd3ad;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-e {
+            background-color: #f8bfdd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .highlight-rhyme-f {
+            background-color: #d2bcfa;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-g {
+            background-color: #d9f3e2;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-h {
+            background-color: #ade3f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-i {
+            background-color: #e2f0f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-j {
+            background-color: #f9e2f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-k {
+            background-color: #eaf9e2;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-l {
+            background-color: #f9f1e2;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-m {
+            background-color: #e2f9f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-n {
+            background-color: #f1e2f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-o {
+            background-color: #e2d9f3;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .highlight-rhyme-p {
+            background-color: #e9e2f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        
+        .highlight-bokstavrim {
+            background-color: #cce5ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .highlight-anafor {
+            background-color: #cce5ff;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
         .spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #667eea;
@@ -209,52 +420,225 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .info-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 1000;
+        }
+        
+        .info-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.3s;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: auto;
+            transition: color 0.2s;
+        }
+        
+        .close-button:hover {
+            color: #333;
+            transform: none;
+        }
+        
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .modal h3 {
+            color: #a374d2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .modal p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .modal a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .modal a:hover {
+            text-decoration: underline;
+        }
+        
+        .citation {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Info Icon -->
+    <div class="info-icon" onclick="openInfoModal()" title="Om appen">ℹ</div>
+    
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal" onclick="closeInfoModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="closeInfoModal()">&times;</button>
+            <h2>Om Diktanalyse-appen</h2>
+            
+            <p>Denne appen analyserer dikt og identifiserer litterære virkemidler som enderim, bokstavrim og anafor.</p>
+            
+            <h3>Ressurser og referanser</h3>
+            
+            <p><strong>1. Poetry Analysis Python kodebibliotek</strong></p>
+            <p>Appen bruker poetry-analysis-biblioteket for tekstanalyse.</p>
+            <p><a href="https://norn-uio.github.io/poetry-analysis/" target="_blank">https://norn-uio.github.io/poetry-analysis/</a></p>
+            
+            <p><strong>2. NORN Dikt / NORN Poems</strong></p>
+            <p><a href="https://github.com/norn-uio/norn-poems" target="blank">NORN Dikt</a> er et norsk poesikorpus med boklyrikk publisert for første gang på 1890-tallet. 
+                Alle diktene er blitt manuelt korrekturlest. Du kan velge mellom disse diktene i nedtrekksmenyen når du trykker på "📚 NORN Dikt".</p>
+            <p>Dette korpuset ble laget i det ERC-finansierte prosjektet <a href="https://www.hf.uio.no/iln/forskning/prosjekter/norn-norske-romantiske-nasjonalismer/" target="_blank">"Norske romantiske nasjonalismer"</a> (NORN).</p>
+            <div class="citation">Kvinnsland, R., Dale, I. L., & Tungland, L. M. (2024). Rediscovering the 1890s: A Norwegian Poetry Corpus. In W. Haverals, M. Koolen, L. Thompson (Eds.), Proceedings of the Computational Humanities Research Conference 2024 (pp. 1259–1271). CEUR. <a href="https://ceur-ws.org/Vol-3834/#paper24" target="_blank">https://ceur-ws.org/Vol-3834/#paper24</a></div>
+            
+            <p><strong>3. PoeTree: Poetry Treebanks</strong></p>
+            <!-- <a href="https://brill.com/view/journals/rdj/aop/article-10.1163-24523666-bja10044/article-10.1163-24523666-bja10044.xml" target="_blank">Paper URL</a>  -->
+            <p><a href="https://versologie.cz/poetree/general_info" target="_blank">PoeTree</a> 
+                er en flerspråklig samling av poesitrebanker som gjør det mulig å hente fullstendige dikt, annotasjoner og metadata via API.</p>
+            <p>I <a href="https://versologie.cz/poetree/versions" target="_blank">versjon 1.0.0</a> har de lagt til poetree.no, en norsk trebank med dikt fra korpuset NORN Dikt.</p>
+            <div class="citation">Plecháč, P., Cinková, S., Kolár, R., Šeļa, A., De Sisto, M., Nugues, L., Haider, T., & Kočnik, N. (2024). PoeTree: Poetry Treebanks in Czech, English, French, German, Hungarian, Italian, Portuguese, Russian, Slovenian and Spanish. Research Data Journal for the Humanities and Social Sciences (published online ahead of print 2024). <a href="https://doi.org/10.1163/24523666-bja10044" target="_blank">https://doi.org/10.1163/24523666-bja10044</a></div>
+        </div>
+    </div>
     <div class="container">
-        <h1>📜 Hvilket dikt vil du analysere?</h1>
-        <p class="subtitle">...</p>
+        <h1>Diktanalyse</h1>
         
         <div class="input-group">
-            <label>Velg tekstkilde</label>
+            <label>🕵️‍♀️Hvilket dikt vil du analysere? </label>
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()">
-                    <label for="nornDikt">Norn Dikt</label>
+                    <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()" checked>
+                    <label for="nornDikt">📚 NORN Dikt</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()" checked>
-                    <label for="egenTekst">Lim inn tekst</label>
+                    <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()">
+                    <label for="egenTekst">📝 Fyll inn tekst </label>
                 </div>
             </div>
         </div>
         
         <!-- Dropdown for predefined poems -->
         <div id="nornDiktContainer" class="input-group hidden">
-            <label for="poemSelect">Velg et dikt:</label>
-            <select id="poemSelect">
-                <option value="">-- Velg et dikt --</option>
-                <option value="poem1">Nordmannen - Bjørnstjerne Bjørnson</option>
-                <option value="poem2">Terje Vigen - Henrik Ibsen</option>
-                <option value="poem3">Hvite kors - Arnulf Øverland</option>
-                <option value="poem4">Jeg elsker - Inger Hagerup</option>
-                <option value="poem5">Det er den draum - Olav H. Hauge</option>
-            </select>
+            <select id="poemSelect"></select>
         </div>
         
         <!-- Text area for custom text -->
         <div id="egenTekstContainer" class="input-group">
-            <label for="customText">Skriv eller lim inn teksten din:</label>
             <textarea id="customText" placeholder="Skriv ditt dikt her..."></textarea>
         </div>
         
-        <button id="submitBtn" onclick="submitTask()">Analyser tekst</button>
+        <button id="submitBtn" onclick="submitTask()">Annoter diktet</button>
         
         <div id="resultContainer" class="result-container">
             <div id="statusMessage" class="status"></div>
             <div id="spinner" class="spinner" style="display: none;"></div>
-            <div id="resultData" class="result-data"></div>
+            
+            <div id="metadataInfo" class="metadata-info" style="display: none;"></div>
+
+            <div id="annotationOptions" class="annotation-options" style="display: none;">
+                <label>Vis annotasjoner:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showEnderim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showEnderim">Enderim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showBokstavrim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showBokstavrim">Bokstavrim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showAnafor" checked onchange="updateAnnotationDisplay()">
+                        <label for="showAnafor">Anafor</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="textDisplay" class="text-display" style="display: none;"></div>
+            <div id="resultData" class="result-data" style="display: none;"></div>
         </div>
     </div>
     
@@ -283,6 +667,13 @@
                     option.textContent = title;
                     select.appendChild(option);
                 });
+                // Auto-select first poem if available
+                if (select.options.length > 1) {
+                    select.selectedIndex = 1;
+                }
+                // Ensure dropdown mode is visible as default
+                document.getElementById('nornDikt').checked = true;
+                toggleInputType();
             } catch (error) {
                 console.error('Failed to load poems:', error);
             }
@@ -313,7 +704,11 @@
                 if (!selectedPoem) {
                     return null;
                 }
-                // Return the selected poem title
+                // Return the actual poem text if available, fallback to title
+                const poemMeta = poems[selectedPoem];
+                if (poemMeta && poemMeta.text && poemMeta.text.trim()) {
+                    return poemMeta.text;
+                }
                 return selectedPoem;
             } else {
                 const customText = document.getElementById('customText').value;
@@ -338,15 +733,18 @@
             const resultContainer = document.getElementById('resultContainer');
             const statusMessage = document.getElementById('statusMessage');
             const spinner = document.getElementById('spinner');
-            const resultData = document.getElementById('resultData');
+            const annotationOptions = document.getElementById('annotationOptions');
+            const textDisplay = document.getElementById('textDisplay');
             
             // Disable button and show loading
             submitBtn.disabled = true;
             resultContainer.classList.add('show');
             statusMessage.className = 'status processing';
-            statusMessage.textContent = 'Processing...';
+            statusMessage.textContent = 'Analyserer tekst...';
             spinner.style.display = 'block';
-            resultData.textContent = '';
+            annotationOptions.style.display = 'none';
+            textDisplay.style.display = 'none';
+            analysisResult = null;
             
             try {
                 // Submit task
@@ -376,6 +774,8 @@
             }
         }
         
+        let analysisResult = null; // Store the full analysis result
+        
         async function checkResult() {
             if (!currentTaskId) return;
             
@@ -388,14 +788,23 @@
                     
                     const statusMessage = document.getElementById('statusMessage');
                     const spinner = document.getElementById('spinner');
-                    const resultData = document.getElementById('resultData');
                     const submitBtn = document.getElementById('submitBtn');
+                    const annotationOptions = document.getElementById('annotationOptions');
+                    const textDisplay = document.getElementById('textDisplay');
                     
                     statusMessage.className = 'status completed';
-                    statusMessage.textContent = '✓ Processing Complete';
+                    statusMessage.textContent = '';
                     spinner.style.display = 'none';
-                    resultData.textContent = JSON.stringify(data.result, null, 2);
                     submitBtn.disabled = false;
+                    
+                    // Store result and display it
+                    analysisResult = data.result;
+                    updateMetadataInfo();
+                    annotationOptions.style.display = 'block';
+                    textDisplay.style.display = 'block';
+                    
+                    // Display the annotated text
+                    updateAnnotationDisplay();
                 }
                 
             } catch (error) {
@@ -411,6 +820,195 @@
                 submitBtn.disabled = false;
             }
         }
+                function updateMetadataInfo() {
+                    const metaDiv = document.getElementById('metadataInfo');
+                    const nornDikt = document.getElementById('nornDikt').checked;
+                    if (!metaDiv) return;
+                    if (nornDikt) {
+                        const selectedLabel = document.getElementById('poemSelect').value;
+                        const meta = poems[selectedLabel];
+                        if (meta) {
+                            const title = meta.title || (selectedLabel.split(' - ')[0] || '');
+                            const author = meta.author || (selectedLabel.split(' - ')[1] || '');
+                            const book = meta.book_title || '';
+                            const bookUrl = meta.book_url || '';
+                            const year = meta.year || '';
+
+                            // Derive lifespan if present in metadata or within author string
+                            let lifespan = '';
+                            // Support multiple possible key names, prioritize author_born/author_died
+                            const by = meta.author_born || meta.author_birth_year || meta.birth_year;
+                            const dy = meta.author_died || meta.author_death_year || meta.death_year;
+                            if (by && dy) {
+                                lifespan = `(${by} - ${dy})`;
+                            } else if (author) {
+                                const m = author.match(/\((\d{3,4})\s*[-–]\s*(\d{3,4})\)/);
+                                if (m) lifespan = `(${m[1]} - ${m[2]})`;
+                            }
+
+                            const rows = [];
+                            if (title) rows.push(`<h2>"${escapeHtml(title)}"</h2>`);
+                            if (author) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">person<\/span> ${escapeHtml(author)}${lifespan ? ' ' + escapeHtml(lifespan) : ''}</div>`);
+                            if (book) {
+                                const titleEm = `<em>${escapeHtml(book)}</em>`;
+                                const bookHtml = bookUrl
+                                    ? `<a href="${escapeHtml(bookUrl)}" target="_blank" rel="noopener">${titleEm}</a>`
+                                    : titleEm;
+                                rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">book_5<\/span> ${bookHtml}</div>`);
+                            }
+                            if (year) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">calendar_month<\/span> ${escapeHtml(year)}</div>`);
+                                
+                            metaDiv.innerHTML = rows.join('');
+                            metaDiv.style.display = rows.length ? 'block' : 'none';
+                            return;
+                        }
+                    }
+                    metaDiv.style.display = 'none';
+                }
+        
+        function updateAnnotationDisplay() {
+            if (!analysisResult) return;
+            
+            const showEnderim = document.getElementById('showEnderim').checked;
+            const showBokstavrim = document.getElementById('showBokstavrim').checked;
+            const showAnafor = document.getElementById('showAnafor').checked;
+            const textDisplay = document.getElementById('textDisplay');
+            
+            // Split text into lines
+            const lines = analysisResult.text.split('\n');
+            
+            // Build a map of absolute line index to verse data
+            const verseMap = {};
+            if (showEnderim && analysisResult.end_rhymes) {
+                let absoluteLineIndex = 0;
+                for (const stanza of analysisResult.end_rhymes) {
+                    for (const verse of stanza.verses) {
+                        verseMap[absoluteLineIndex] = {
+                            rhyme_tag: verse.rhyme_tag.toUpperCase(),
+                            last_token: verse.last_token
+                        };
+                        absoluteLineIndex++;
+                    }
+                }
+            }
+            
+            // Create annotated HTML
+            let html = '';
+            let lineNumber = 0;
+            let absoluteLineIndex = 0;
+            
+            lines.forEach((line, index) => {
+                let lineContent = escapeHtml(line);
+                
+                // Only increment line number for non-empty lines
+                let displayLineNumber = '';
+                let rhymeTag = '';
+                
+                if (line.trim()) {
+                    displayLineNumber = ++lineNumber;
+                    
+                    // Get verse data for this line
+                    const verseData = verseMap[absoluteLineIndex];
+                    if (verseData) {
+                        rhymeTag = verseData.rhyme_tag;
+                        
+                        // Apply end rhyme highlighting with color based on rhyme tag
+                        if (showEnderim && verseData.last_token) {
+                            const rhymeClass = `highlight-rhyme-${verseData.rhyme_tag.toLowerCase()}`;
+                            const regex = new RegExp(`\\b(${escapeRegex(verseData.last_token)})\\b`, 'gi');
+                            lineContent = lineContent.replace(regex, `<span class="${rhymeClass}">$1</span>`);
+                        }
+                    }
+                    
+                    // Apply alliteration annotations (use index, which includes empty lines)
+                    if (showBokstavrim && analysisResult.alliteration) {
+                        lineContent = applyAlliterationAnnotations(lineContent, index, analysisResult.alliteration);
+                    }
+                    
+                    // Apply anaphora annotations (use index, which includes empty lines)
+                    if (showAnafor && analysisResult.anaphora) {
+                        lineContent = applyAnaphoraAnnotations(lineContent, index, analysisResult.anaphora);
+                    }
+                    
+                    absoluteLineIndex++;
+                }
+                
+                html += `<div class="text-line">`;
+                html += `<span class="rhyme-tag">${rhymeTag}</span>`;
+                html += `<span class="line-number">${displayLineNumber}</span>`;
+                html += `<span class="line-content">${lineContent || '&nbsp;'}</span>`;
+                html += `</div>`;
+            });
+            
+            textDisplay.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function applyAlliterationAnnotations(lineContent, absoluteLineIndex, alliterations) {
+            if (absoluteLineIndex === undefined || !alliterations || alliterations.length === 0) return lineContent;
+            
+            // Collect all alliterating words for this line
+            const alliteratingWords = new Set();
+            for (const allitItem of alliterations) {
+                if (allitItem.line === absoluteLineIndex && allitItem.words) {
+                    allitItem.words.forEach(word => alliteratingWords.add(word.toLowerCase()));
+                }
+            }
+            
+            // Highlight only the initial letter of alliterating words
+            if (alliteratingWords.size > 0) {
+                const words = Array.from(alliteratingWords).map(escapeRegex).join('|');
+                // Match word boundary, capture first letter, then rest of word
+                const regex = new RegExp(`\\b(${words})\\b`, 'gi');
+                lineContent = lineContent.replace(regex, (match) => {
+                    return '<span class="highlight-bokstavrim">' + match.charAt(0) + '</span>' + match.slice(1);
+                });
+            }
+            
+            return lineContent;
+        }
+        
+        function applyAnaphoraAnnotations(lineContent, absoluteLineIndex, anaphoras) {
+            if (absoluteLineIndex === undefined || !anaphoras || anaphoras.length === 0) return lineContent;
+            
+            // Find anaphoras that apply to this line
+            for (const anaphora of anaphoras) {
+                if (anaphora.line_id && anaphora.line_id.includes(absoluteLineIndex) && anaphora.phrase) {
+                    // Highlight the anaphora phrase at the start of the line
+                    const regex = new RegExp(`^(${escapeRegex(anaphora.phrase)})\\b`, 'i');
+                    lineContent = lineContent.replace(regex, '<span class="highlight-anafor">$1</span>');
+                }
+            }
+            
+            return lineContent;
+        }
+        
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+        
+        function openInfoModal() {
+            document.getElementById('infoModal').classList.add('show');
+        }
+        
+        function closeInfoModal(event) {
+            // Close if clicking on the overlay or close button
+            if (!event || event.target.id === 'infoModal' || event.target.classList.contains('close-button')) {
+                document.getElementById('infoModal').classList.remove('show');
+            }
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeInfoModal();
+            }
+        });
         
         // Initialize on page load
         toggleInputType();

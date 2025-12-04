@@ -1,28 +1,31 @@
 # Use Python 3.13 slim image
-FROM python:3.13-slim
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 # Set working directory
 WORKDIR /app
+        
+# Install system deps for building wheels (if needed)
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-# Copy dependency files
+# Install Python dependencies (from pyproject.toml)
 COPY pyproject.toml ./
-
-# Install dependencies using uv
-RUN uv sync --frozen --no-cache
+RUN uv venv
+RUN uv pip install -r pyproject.toml
 
 # Copy application code
 COPY app.py tasks.py config.py ./
 COPY templates ./templates/
-
-# Expose port 5000
-EXPOSE 5000
+COPY static/* ./static/
 
 # Set environment variables
 ENV FLASK_APP=app.py
 ENV PYTHONUNBUFFERED=1
+ENV PORT=5000
+ENV GUNICORN_WORKERS=4
 
-# Run the application
-CMD ["uv", "run", "python", "app.py"]
+# Expose port 5000
+EXPOSE $PORT
+
+# Run the application with Gunicorn (production)
+# Use env vars PORT and GUNICORN_WORKERS to configure
+CMD ["bash", "-c", "uv run gunicorn -w ${GUNICORN_WORKERS} -b 0.0.0.0:${PORT} app:app"]
