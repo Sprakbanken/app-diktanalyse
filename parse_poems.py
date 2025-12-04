@@ -216,15 +216,42 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
         poems_texts = []
 
         def extract_lg_text(lg_elem):
+            # If this lg contains stanza children, build text per stanza and join with two newlines
+            stanza_children = lg_elem.findall("tei:lg[@type='stanza']", ns)
+            if stanza_children:
+                stanza_texts = []
+                for stanza in stanza_children:
+                    stanza_lines = []
+                    for l in stanza.findall("tei:l", ns):
+                        if l.text:
+                            stanza_lines.append(l.text.strip())
+                        if l.tail and l.tail.strip():
+                            stanza_lines.append(l.tail.strip())
+                    if not stanza_lines:
+                        # Fallback stanza text using lb-based splitting
+                        parts = []
+                        for node in stanza.iter():
+                            tag = node.tag if isinstance(node.tag, str) else ""
+                            if tag.endswith("lb"):
+                                parts.append("\n")
+                            if node.text:
+                                parts.append(node.text)
+                            if node.tail:
+                                parts.append(node.tail)
+                        text = "".join(parts)
+                        text = "\n".join([ln.strip() for ln in text.splitlines()])
+                        stanza_texts.append(text.strip())
+                    else:
+                        stanza_texts.append("\n".join(stanza_lines).strip())
+                return "\n\n".join([s for s in stanza_texts if s])
+
+            # Otherwise, collect line elements directly under lg
             lines = []
-            # Collect line elements; if absent, try collecting text nodes
-            for l in lg_elem.findall(".//tei:l", ns):
+            for l in lg_elem.findall("tei:l", ns):
                 if l.text:
                     lines.append(l.text.strip())
-                # Include tail text after inline tags
                 if l.tail and l.tail.strip():
                     lines.append(l.tail.strip())
-            # Handle explicit line breaks <lb/>
             if not lines:
                 # Fallback: join all text under lg with newlines on lb
                 parts = []
@@ -237,7 +264,6 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
                     if node.tail:
                         parts.append(node.tail)
                 text = "".join(parts)
-                # Normalize multiple newlines and strip
                 text = "\n".join([ln.strip() for ln in text.splitlines()])
                 return text.strip()
             return "\n".join(lines).strip()
