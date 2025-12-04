@@ -8,6 +8,10 @@ import requests
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional
 
+import poetree
+import random
+
+
 # GitHub API configuration
 GITHUB_API_BASE = "https://api.github.com"
 REPO_OWNER = "norn-uio"
@@ -18,92 +22,54 @@ REPO_PATH = "TEI"  # Path to XML files in the repository
 POETREE_API_BASE = "https://versologie.cz/poetree/api"
 
 
-def fetch_poetree_poems(max_poems: Optional[int] = None) -> List[Dict]:
+def reconstruct_plain_text(poem_body: list) -> str:
+    """From the poetree.Poem.get_body() list output, reconstruct the plain text poem."""
+    text = ""
+    for idx, line in enumerate(poem_body):
+        line_stanza = line.get("id_stanza")
+        if idx == 0:
+            current_stanza = line_stanza
+        if current_stanza == line_stanza:
+            text += line.get("text") + "\n"
+        else:
+            text += "\n"
+            current_stanza = line_stanza
+            text += line.get("text")
+    return text
+
+
+def fetch_poetree_poems(max_poems: Optional[int] = None) -> Dict[str, Dict]:
     """
-    Fetch NORN poems from the PoeTree API.
+    Fetch NORN poems using the poetree Python library (preferred).
 
-    Args:
-        max_poems: Maximum number of poems to fetch (None for all)
-
-    Returns:
-        List of poem dictionaries with metadata
+    Returns a list of poem dicts enriched with `text` (body) and metadata.
     """
-    url = f"{POETREE_API_BASE}/poems?corpus=no"
 
-    try:
-        print(f"Fetching poems from PoeTree API: {url}")
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
+    corpus = poetree.Corpus("no")
+    poems = [poem for source in corpus.get_sources() for poem in source.get_poems()]
+    if max_poems:
+        poems = poems[:max_poems]
 
-        poems = response.json()
-
-        if not isinstance(poems, list):
-            print(f"Unexpected response format: {type(poems)}")
-            return []
-
-        print(f"Fetched {len(poems)} poems from PoeTree API")
-
-        if max_poems:
-            poems = poems[:max_poems]
-            print(f"Limited to {len(poems)} poems")
-
-        # Enrich poems with full text by fetching /poem/{id} and using `body`
-        enriched = []
-        for p in poems:
-            poem_id = p.get("id")
-            text_body = ""
-            if poem_id is not None:
-                try:
-                    detail_url = f"{POETREE_API_BASE}/poem/{poem_id}"
-                    dresp = requests.get(detail_url, timeout=20)
-                    dresp.raise_for_status()
-                    detail = dresp.json()
-                    text_body = detail.get("body", "")
-                except requests.RequestException as e:
-                    print(f"Error fetching poem {poem_id} body: {e}")
-
-            # Copy original dict and attach text
-            p_copy = dict(p)
-            if isinstance(text_body, str):
-                p_copy["text"] = text_body
-            enriched.append(p_copy)
-
-        return enriched
-
-    except requests.RequestException as e:
-        print(f"Error fetching poems from PoeTree API: {e}")
-        return []
-
-
-def process_poetree_poems(poems: List[Dict]) -> Dict[str, Dict]:
-    """
-    Process PoeTree API poems into the format used by the app.
-
-    Args:
-        poems: List of poem dictionaries from PoeTree API
-
-    Returns:
-        Dictionary mapping display labels to poem metadata
-    """
     poem_data = {}
 
-    for idx, poem in enumerate(poems):
-        # Extract metadata from PoeTree format
-        title = poem.get("title", f"Untitled {idx}")
-        author = poem.get("author", "Unknown")
-        year = poem.get("year", "")
-        poem_id = poem.get("id", idx)
-        text = poem.get("text", "")
+    for poem in poems:
+        author = poetree.Author(lang="no", id_=poem.id_author)
+        book = poetree.Source(lang="no", id_=poem.id_source)
 
         # Create dropdown label
-        dropdown_label = f"{title} - {author}"
+        dropdown_label = f"{poem.title} - {author.name}"  # type: ignore
 
         poem_data[dropdown_label] = {
-            "id": poem_id,
-            "title": title,
-            "author": author,
-            "year": str(year) if year else "",
-            "text": text if isinstance(text, str) else "",
+            "id": poem.id,
+            "poetree_id": poem.id_,
+            "title": poem.title,
+            "author": author.name,  # type: ignore
+            "author_born": str(author.born) if author.born else "?",  # type: ignore
+            "author_died": str(author.died) if author.died else "?",  # type: ignore
+            "book_title": book.title,  # type: ignore
+            "year": str(book.year_published) if book.year_published else "?",  # type: ignore
+            "book_url": f"https://urn.nb.no/URN:NBN:no-nb_digibok_{book.id}",  # type: ignore
+            "text": reconstruct_plain_text(poem.get_body()),
             "source": "poetree",
         }
 
