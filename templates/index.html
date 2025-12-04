@@ -828,8 +828,9 @@
 
                             // Derive lifespan if present in metadata or within author string
                             let lifespan = '';
-                            const by = meta.author_birth_year || meta.birth_year; // flexible keys
-                            const dy = meta.author_death_year || meta.death_year;
+                            // Support multiple possible key names, prioritize author_born/author_died
+                            const by = meta.author_born || meta.author_birth_year || meta.birth_year;
+                            const dy = meta.author_died || meta.author_death_year || meta.death_year;
                             if (by && dy) {
                                 lifespan = `(${by} - ${dy})`;
                             } else if (author) {
