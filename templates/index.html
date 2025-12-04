@@ -591,11 +591,11 @@
             <label>🕵️‍♀️Hvilket dikt vil du analysere? </label>
             <div class="radio-group">
                 <div class="radio-option">
-                    <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()">
+                    <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()" checked>
                     <label for="nornDikt">📚 NORN Dikt</label>
                 </div>
                 <div class="radio-option">
-                    <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()" checked>
+                    <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()">
                     <label for="egenTekst">📝 Fyll inn tekst </label>
                 </div>
             </div>
@@ -667,6 +667,13 @@
                     option.textContent = title;
                     select.appendChild(option);
                 });
+                // Auto-select first poem if available
+                if (select.options.length > 1) {
+                    select.selectedIndex = 1;
+                }
+                // Ensure dropdown mode is visible as default
+                document.getElementById('nornDikt').checked = true;
+                toggleInputType();
             } catch (error) {
                 console.error('Failed to load poems:', error);
             }
