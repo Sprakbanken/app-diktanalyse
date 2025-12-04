@@ -1,5 +1,5 @@
 from poetry_analysis.rhyme_detection import tag_text
-from poetry_analysis.alliteration import extract_alliteration, find_line_alliterations
+from poetry_analysis.alliteration import extract_alliteration
 from poetry_analysis.anaphora import extract_poem_anaphora
 
 
