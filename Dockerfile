@@ -15,7 +15,7 @@ RUN uv pip install -r pyproject.toml
 # Copy application code
 COPY app.py tasks.py config.py ./
 COPY templates ./templates/
-COPY static/poems.json ./static/poems.json
+COPY static/* ./static/
 
 # Set environment variables
 ENV FLASK_APP=app.py
