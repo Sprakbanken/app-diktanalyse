@@ -200,8 +200,6 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
             )
             if bibl_elem is not None:
                 book_url = f"https://www.nb.no/items/URN:NBN:{bibl_elem.get('xml:id', '')}"
-        else:
-            book_url = ""
 
         def extract_lg_text(lg_elem):
             # If this lg contains stanza children, build text per stanza and join with two newlines
