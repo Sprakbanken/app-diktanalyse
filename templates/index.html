@@ -786,7 +786,7 @@
                     const textDisplay = document.getElementById('textDisplay');
                     
                     statusMessage.className = 'status completed';
-                    statusMessage.textContent = '✓ Analysen er ferdig';
+                    statusMessage.textContent = '';
                     spinner.style.display = 'none';
                     submitBtn.disabled = false;
                     
@@ -824,6 +824,7 @@
                             const title = meta.title || (selectedLabel.split(' - ')[0] || '');
                             const author = meta.author || (selectedLabel.split(' - ')[1] || '');
                             const book = meta.book_title || '';
+                            const bookUrl = meta.book_url || '';
                             const year = meta.year || '';
 
                             // Derive lifespan if present in metadata or within author string
@@ -839,11 +840,17 @@
                             }
 
                             const rows = [];
-                            if (title) rows.push(`<h2>${escapeHtml(title)}</h2>`);
+                            if (title) rows.push(`<h2>"${escapeHtml(title)}"</h2>`);
                             if (author) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">person<\/span> ${escapeHtml(author)}${lifespan ? ' ' + escapeHtml(lifespan) : ''}</div>`);
-                            if (book) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">book_5<\/span> ${escapeHtml(book)}</div>`);
+                            if (book) {
+                                const titleEm = `<em>${escapeHtml(book)}</em>`;
+                                const bookHtml = bookUrl
+                                    ? `<a href="${escapeHtml(bookUrl)}" target="_blank" rel="noopener">${titleEm}</a>`
+                                    : titleEm;
+                                rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">book_5<\/span> ${bookHtml}</div>`);
+                            }
                             if (year) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">calendar_month<\/span> ${escapeHtml(year)}</div>`);
-
+                                
                             metaDiv.innerHTML = rows.join('');
                             metaDiv.style.display = rows.length ? 'block' : 'none';
                             return;
