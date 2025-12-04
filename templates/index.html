@@ -419,7 +419,7 @@
         }
         
         .modal h3 {
-            color: #667eea;
+            color: #a374d2;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 18px;
@@ -482,48 +482,24 @@
             
             <h3>Ressurser og referanser</h3>
             
-            <p><strong>1. Poetry Analysis Python Library</strong></p>
-            <p>Appen bruker poetry-analysis biblioteket for tekstanalyse.</p>
+            <p><strong>1. Poetry Analysis Python kodebibliotek</strong></p>
+            <p>Appen bruker poetry-analysis-biblioteket for tekstanalyse.</p>
             <p><a href="https://norn-uio.github.io/poetry-analysis/" target="_blank">https://norn-uio.github.io/poetry-analysis/</a></p>
             
-            <p><strong>2. PoeTree: Poetry Treebanks</strong></p>
-            <p>PoeTree er en flerspråklig samling av poesitreebanks som gjør det mulig å hente fullstendige dikt og metadata via API.</p>
-            <div class="citation">@article{poetree2024,
-  author     = {Petr Plecháč and Silvie Cinková and Robert Kolár and 
-                Artjoms Šeļa and Mirella De Sisto and Lara Nugues and 
-                Thomas Haider and Neža Kočnik},
-  title      = {PoeTree: Poetry Treebanks in Czech, English, French, 
-                German, Hungarian, Italian, Portuguese, Russian, 
-                Slovenian and Spanish},
-  journal    = {Research Data Journal for the Humanities and Social Sciences},
-  year       = {2024},
-  publisher  = {Brill},
-  address    = {Leiden, The Netherlands},
-  doi        = {10.1163/24523666-bja10044},
-  pages      = {1--17},
-  url        = {https://brill.com/view/journals/rdj/aop/article-10.1163-24523666-bja10044/article-10.1163-24523666-bja10044.xml}
-}</div>
+            <p><strong>2. NORN Dikt / NORN Poems</strong></p>
+            <p><a href="https://github.com/norn-uio/norn-poems" target="blank">NORN Dikt</a> er et norsk poesikorpus med boklyrikk publisert for første gang på 1890-tallet. 
+                Alle diktene er blitt manuelt korrekturlest. Du kan velge mellom disse diktene i nedtrekksmenyen når du trykker på "📚 NORN Dikt".</p>
+            <p>Dette korpuset ble laget i det ERC-finansierte prosjektet <a href="https://www.hf.uio.no/iln/forskning/prosjekter/norn-norske-romantiske-nasjonalismer/" target="_blank">"Norske romantiske nasjonalismer"</a> (NORN).</p>
+            <div class="citation">Kvinnsland, R., Dale, I. L., & Tungland, L. M. (2024). Rediscovering the 1890s: A Norwegian Poetry Corpus. In W. Haverals, M. Koolen, L. Thompson (Eds.), Proceedings of the Computational Humanities Research Conference 2024 (pp. 1259–1271). CEUR. <a href="https://ceur-ws.org/Vol-3834/#paper24" target="_blank">https://ceur-ws.org/Vol-3834/#paper24</a></div>
             
-            <p><strong>3. PoeTree.no: Norwegian Poetry Corpus</strong></p>
-            <p>PoeTree.no er et norsk poesikorpus fra 1890-tallet.</p>
-            <div class="citation">@inproceedings{poetree_no,
-  address   = {Aarhus, Denmark},
-  series    = {CEUR Workshop Proceedings},
-  title     = {Rediscovering the 1890s: A Norwegian Poetry Corpus},
-  volume    = {3834},
-  url       = {https://ceur-ws.org/Vol-3834/#paper24},
-  booktitle = {Proceedings of the Computational Humanities Research 
-               Conference 2024},
-  publisher = {CEUR},
-  author    = {Kvinnsland, Ranveig and Dale, Ingerid Løyning and 
-               Tungland, Lars Magne},
-  editor    = {Haverals, Wouter and Koolen, Marijn and Thompson, Laure},
-  year      = {2024},
-  pages     = {1259--1271}
-}</div>
+            <p><strong>3. PoeTree: Poetry Treebanks</strong></p>
+            <!-- <a href="https://brill.com/view/journals/rdj/aop/article-10.1163-24523666-bja10044/article-10.1163-24523666-bja10044.xml" target="_blank">Paper URL</a>  -->
+            <p><a href="https://versologie.cz/poetree/general_info" target="_blank">PoeTree</a> 
+                er en flerspråklig samling av poesitrebanker som gjør det mulig å hente fullstendige dikt, annotasjoner og metadata via API.</p>
+            <p>I <a href="https://versologie.cz/poetree/versions" target="_blank">versjon 1.0.0</a> har de lagt til poetree.no, en norsk trebank med dikt fra korpuset NORN Dikt.</p>
+            <div class="citation">Plecháč, P., Cinková, S., Kolár, R., Šeļa, A., De Sisto, M., Nugues, L., Haider, T., & Kočnik, N. (2024). PoeTree: Poetry Treebanks in Czech, English, French, German, Hungarian, Italian, Portuguese, Russian, Slovenian and Spanish. Research Data Journal for the Humanities and Social Sciences (published online ahead of print 2024). <a href="https://doi.org/10.1163/24523666-bja10044" target="_blank">https://doi.org/10.1163/24523666-bja10044</a></div>
         </div>
     </div>
-    
     <div class="container">
         <h1>Diktanalyse</h1>
         
@@ -637,7 +613,11 @@
                 if (!selectedPoem) {
                     return null;
                 }
-                // Return the selected poem title
+                // Return the actual poem text if available, fallback to title
+                const poemMeta = poems[selectedPoem];
+                if (poemMeta && poemMeta.text && poemMeta.text.trim()) {
+                    return poemMeta.text;
+                }
                 return selectedPoem;
             } else {
                 const customText = document.getElementById('customText').value;
