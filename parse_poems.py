@@ -20,7 +20,7 @@ POETREE_API_BASE = "https://versologie.cz/poetree/api"
 
 def fetch_poetree_poems(max_poems: Optional[int] = None) -> List[Dict]:
     """
-    Fetch poems from the PoeTree API.
+    Fetch NORN poems from the PoeTree API.
 
     Args:
         max_poems: Maximum number of poems to fetch (None for all)
@@ -28,7 +28,7 @@ def fetch_poetree_poems(max_poems: Optional[int] = None) -> List[Dict]:
     Returns:
         List of poem dictionaries with metadata
     """
-    url = f"{POETREE_API_BASE}/poems"
+    url = f"{POETREE_API_BASE}/poems?corpus=no"
 
     try:
         print(f"Fetching poems from PoeTree API: {url}")
@@ -47,7 +47,28 @@ def fetch_poetree_poems(max_poems: Optional[int] = None) -> List[Dict]:
             poems = poems[:max_poems]
             print(f"Limited to {len(poems)} poems")
 
-        return poems
+        # Enrich poems with full text by fetching /poem/{id} and using `body`
+        enriched = []
+        for p in poems:
+            poem_id = p.get("id")
+            text_body = ""
+            if poem_id is not None:
+                try:
+                    detail_url = f"{POETREE_API_BASE}/poem/{poem_id}"
+                    dresp = requests.get(detail_url, timeout=20)
+                    dresp.raise_for_status()
+                    detail = dresp.json()
+                    text_body = detail.get("body", "")
+                except requests.RequestException as e:
+                    print(f"Error fetching poem {poem_id} body: {e}")
+
+            # Copy original dict and attach text
+            p_copy = dict(p)
+            if isinstance(text_body, str):
+                p_copy["text"] = text_body
+            enriched.append(p_copy)
+
+        return enriched
 
     except requests.RequestException as e:
         print(f"Error fetching poems from PoeTree API: {e}")
@@ -82,7 +103,7 @@ def process_poetree_poems(poems: List[Dict]) -> Dict[str, Dict]:
             "title": title,
             "author": author,
             "year": str(year) if year else "",
-            "text": text,
+            "text": text if isinstance(text, str) else "",
             "source": "poetree",
         }
 
@@ -190,24 +211,58 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
         if date_elem is not None:
             year = date_elem.get("when", date_elem.text or "").strip()
 
-        # Extract poem titles from lg elements with type="poem"
+        # Extract poem titles and texts from lg elements
         poems = []
-        for lg in root.findall(".//tei:lg[@type='poem']", ns):
+        poems_texts = []
+
+        def extract_lg_text(lg_elem):
+            lines = []
+            # Collect line elements; if absent, try collecting text nodes
+            for l in lg_elem.findall(".//tei:l", ns):
+                if l.text:
+                    lines.append(l.text.strip())
+                # Include tail text after inline tags
+                if l.tail and l.tail.strip():
+                    lines.append(l.tail.strip())
+            # Handle explicit line breaks <lb/>
+            if not lines:
+                # Fallback: join all text under lg with newlines on lb
+                parts = []
+                for node in lg_elem.iter():
+                    tag = node.tag if isinstance(node.tag, str) else ""
+                    if tag.endswith("lb"):
+                        parts.append("\n")
+                    if node.text:
+                        parts.append(node.text)
+                    if node.tail:
+                        parts.append(node.tail)
+                text = "".join(parts)
+                # Normalize multiple newlines and strip
+                text = "\n".join([ln.strip() for ln in text.splitlines()])
+                return text.strip()
+            return "\n".join(lines).strip()
+
+        lgs = root.findall(".//tei:lg[@type='poem']", ns)
+        if not lgs:
+            lgs = root.findall(".//tei:lg", ns)
+
+        for lg in lgs:
+            head_text = ""
             head = lg.find("tei:head", ns)
             if head is not None and head.text:
-                poems.append(head.text.strip())
-
-        # If no poems found with the specific structure, try alternative
-        if not poems:
-            for head in root.findall(".//tei:lg/tei:head", ns):
-                if head.text:
-                    poems.append(head.text.strip())
+                head_text = head.text.strip()
+            # Only consider as a poem if there is some content
+            poem_body = extract_lg_text(lg)
+            if head_text:
+                poems.append(head_text)
+                poems_texts.append(poem_body)
 
         return {
             "author": author,
             "book_title": book_title,
             "year": year,
             "poems": poems,
+            "poems_texts": poems_texts,
         }
 
     except ET.ParseError as e:
@@ -369,7 +424,7 @@ def main():
     # Check command line arguments
     use_github = "--github" in sys.argv
     use_poetree = "--poetree" in sys.argv
-    max_items = 10  # Default limit
+    max_items = 100  # Default limit
 
     # Check for custom limit
     for arg in sys.argv:
@@ -412,6 +467,13 @@ def main():
                     "year": book_data["year"],
                     "poem_index": idx,
                     "source": "github",
+                    "text": (
+                        book_data.get("poems_texts", [""] * len(book_data["poems"]))[
+                            idx
+                        ]
+                        if idx < len(book_data.get("poems_texts", []))
+                        else ""
+                    ),
                 }
     else:
         print("Using embedded sample data")
