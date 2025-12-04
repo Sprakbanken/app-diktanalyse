@@ -178,7 +178,7 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
             ns,
         )
 
-        year = (date_elem.text or "?").strip()  # type: ignore
+        year = (date_elem.text or "?").strip() if date_elem is not None else "?"
 
         # Extract poem titles and texts from lg elements
         poems = []
