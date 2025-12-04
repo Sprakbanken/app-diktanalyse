@@ -1,5 +1,5 @@
 [project]
-name = "poetry-analysis-app"
+name = "diktanalyse"
 version = "0.1.0"
 description = "A Python web application that annotates end rhymes, anaphora and alliteration in poetry."
 readme = "README.md"
