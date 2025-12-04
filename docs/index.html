@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diktanalyse</title>
+    <link rel="icon" type="image/svg+xml" href="../static/NB_logo_sort.svg">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        /* Minimal styles copied from templates/index.html */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 10px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; }
+        select, textarea { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; background: white; }
+        .radio-group { display: flex; gap: 20px; margin-bottom: 20px; }
+        .radio-option { display: flex; align-items: center; gap: 8px; }
+        .hidden { display: none; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .result-container { margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 6px; display: none; }
+        .result-container.show { display: block; }
+        .status { font-weight: 600; margin-bottom: 10px; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .metadata-info, .annotation-options, .text-display, .result-data { padding: 15px; background: white; border-radius: 4px; margin-bottom: 20px; }
+        .metadata-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; color: #555; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 20px; line-height: 1; color: #667eea; }
+        .text-line { display: flex; margin-bottom: 8px; }
+        .line-number { min-width: 40px; color: #999; font-family: 'Courier New', monospace; font-size: 14px; margin-right: 15px; text-align: right; user-select: none; }
+        .rhyme-tag { min-width: 25px; color: #666; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; margin-right: 5px; text-align: right; user-select: none; }
+        .line-content { flex: 1; }
+        .highlight-rhyme-a { background-color: #febebc; padding: 2px 4px; border-radius: 3px; }
+        .highlight-rhyme-b { background-color: #d4edda; padding: 2px 4px; border-radius: 3px; }
+        .highlight-rhyme-c { background-color: #fff3cd; padding: 2px 4px; border-radius: 3px; }
+        .highlight-bokstavrim, .highlight-anafor { background-color: #cce5ff; padding: 2px 4px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diktanalyse</h1>
+        <div class="input-group">
+            <label>🕵️‍♀️Hvilket dikt vil du analysere? </label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="nornDikt" name="textSource" value="norn" onchange="toggleInputType()" checked>
+                    <label for="nornDikt">📚 NORN Dikt</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="egenTekst" name="textSource" value="egen" onchange="toggleInputType()">
+                    <label for="egenTekst">📝 Fyll inn tekst </label>
+                </div>
+            </div>
+        </div>
+        <div id="nornDiktContainer" class="input-group hidden">
+            <select id="poemSelect"></select>
+        </div>
+        <div id="egenTekstContainer" class="input-group">
+            <textarea id="customText" placeholder="Skriv ditt dikt her..."></textarea>
+        </div>
+        <button id="submitBtn" onclick="submitTask()">Annoter diktet</button>
+        <div id="resultContainer" class="result-container">
+            <div id="statusMessage" class="status"></div>
+            <div id="spinner" class="spinner" style="display: none;"></div>
+            <div id="metadataInfo" class="metadata-info" style="display: none;"></div>
+            <div id="annotationOptions" class="annotation-options" style="display: none;">
+                <label>Vis annotasjoner:</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showEnderim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showEnderim">Enderim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showBokstavrim" checked onchange="updateAnnotationDisplay()">
+                        <label for="showBokstavrim">Bokstavrim</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="showAnafor" checked onchange="updateAnnotationDisplay()">
+                        <label for="showAnafor">Anafor</label>
+                    </div>
+                </div>
+            </div>
+            <div id="textDisplay" class="text-display" style="display: none;"></div>
+            <div id="resultData" class="result-data" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configurable API base for GitHub Pages (frontend-only). Use query ?api=https://your-backend or set window.API_BASE_URL.
+        const API_BASE = (new URLSearchParams(window.location.search)).get('api') || (window.API_BASE_URL || '');
+
+        let currentTaskId = null;
+        let pollInterval = null;
+        let poems = {};
+
+        async function loadPoems() {
+            try {
+                const response = await fetch('./poems.json');
+                const poemData = await response.json();
+                poems = poemData;
+                const select = document.getElementById('poemSelect');
+                select.innerHTML = '<option value="">-- Velg et dikt --</option>';
+                if (Array.isArray(poemData)) {
+                    poemData.forEach((meta, idx) => {
+                        if (!meta) return;
+                        const title = meta.title || meta.poem_title || `Dikt ${idx + 1}`;
+                        const author = meta.author || meta.poet || '';
+                        const label = author ? `${title} - ${author}` : title;
+                        const option = document.createElement('option');
+                        option.value = label;
+                        option.textContent = label;
+                        select.appendChild(option);
+                    });
+                } else {
+                    Object.keys(poemData).forEach(title => {
+                        const meta = poemData[title];
+                        const author = meta && (meta.author || meta.poet) || '';
+                        const label = author ? `${title} - ${author}` : title;
+                        const option = document.createElement('option');
+                        option.value = title;
+                        option.textContent = label;
+                        select.appendChild(option);
+                    });
+                }
+                if (select.options.length > 1) select.selectedIndex = 1;
+                document.getElementById('nornDikt').checked = true;
+                toggleInputType();
+            } catch (error) {
+                console.error('Failed to load poems:', error);
+            }
+        }
+        window.addEventListener('DOMContentLoaded', loadPoems);
+
+        function toggleInputType() {
+            const nornDikt = document.getElementById('nornDikt').checked;
+            const nornContainer = document.getElementById('nornDiktContainer');
+            const egenContainer = document.getElementById('egenTekstContainer');
+            if (nornDikt) { nornContainer.classList.remove('hidden'); egenContainer.classList.add('hidden'); }
+            else { nornContainer.classList.add('hidden'); egenContainer.classList.remove('hidden'); }
+        }
+
+        function getUserInput() {
+            const nornDikt = document.getElementById('nornDikt').checked;
+            if (nornDikt) {
+                const selectedPoem = document.getElementById('poemSelect').value;
+                if (!selectedPoem) return null;
+                const poemMeta = poems[selectedPoem];
+                if (poemMeta && poemMeta.text && poemMeta.text.trim()) return poemMeta.text;
+                return selectedPoem;
+            } else {
+                const customText = document.getElementById('customText').value;
+                return customText.trim() || null;
+            }
+        }
+
+        async function submitTask() {
+            const input = getUserInput();
+            if (!input) {
+                const nornDikt = document.getElementById('nornDikt').checked;
+                alert(nornDikt ? 'Vennligst velg et dikt fra listen' : 'Vennligst skriv inn tekst for analyse');
+                return;
+            }
+            const submitBtn = document.getElementById('submitBtn');
+            const resultContainer = document.getElementById('resultContainer');
+            const statusMessage = document.getElementById('statusMessage');
+            const spinner = document.getElementById('spinner');
+            const annotationOptions = document.getElementById('annotationOptions');
+            const textDisplay = document.getElementById('textDisplay');
+            submitBtn.disabled = true; resultContainer.classList.add('show'); statusMessage.className = 'status processing'; statusMessage.textContent = 'Analyserer tekst...'; spinner.style.display = 'block'; annotationOptions.style.display = 'none'; textDisplay.style.display = 'none'; analysisResult = null;
+            try {
+                const response = await fetch(`${API_BASE}/submit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ input }) });
+                const data = await response.json();
+                if (response.ok) { currentTaskId = data.task_id; pollInterval = setInterval(checkResult, 1000); }
+                else { throw new Error(data.error || 'Failed to submit task'); }
+            } catch (error) {
+                statusMessage.className = 'status error'; statusMessage.textContent = 'Error: ' + error.message; spinner.style.display = 'none'; submitBtn.disabled = false;
+            }
+        }
+
+        let analysisResult = null;
+        async function checkResult() {
+            if (!currentTaskId) return;
+            try {
+                const response = await fetch(`${API_BASE}/result/${currentTaskId}`);
+                const data = await response.json();
+                if (data.status === 'completed') {
+                    clearInterval(pollInterval);
+                    const statusMessage = document.getElementById('statusMessage');
+                    const spinner = document.getElementById('spinner');
+                    const submitBtn = document.getElementById('submitBtn');
+                    const annotationOptions = document.getElementById('annotationOptions');
+                    const textDisplay = document.getElementById('textDisplay');
+                    statusMessage.className = 'status completed'; statusMessage.textContent = '✓ Analysen er ferdig'; spinner.style.display = 'none'; submitBtn.disabled = false;
+                    analysisResult = data.result; updateMetadataInfo(); annotationOptions.style.display = 'block'; textDisplay.style.display = 'block'; updateAnnotationDisplay();
+                }
+            } catch (error) {
+                clearInterval(pollInterval);
+                const statusMessage = document.getElementById('statusMessage');
+                const spinner = document.getElementById('spinner');
+                const submitBtn = document.getElementById('submitBtn');
+                statusMessage.className = 'status error'; statusMessage.textContent = 'Error checking result: ' + error.message; spinner.style.display = 'none'; submitBtn.disabled = false;
+            }
+        }
+
+        function updateMetadataInfo() {
+            const metaDiv = document.getElementById('metadataInfo');
+            const nornDikt = document.getElementById('nornDikt').checked;
+            if (!metaDiv) return;
+            if (nornDikt) {
+                const selectedLabel = document.getElementById('poemSelect').value;
+                const meta = poems[selectedLabel];
+                if (meta) {
+                    const title = meta.title || (selectedLabel.split(' - ')[0] || '');
+                    const author = meta.author || (selectedLabel.split(' - ')[1] || '');
+                    const book = meta.book_title || '';
+                    const bookUrl = meta.book_url || '';
+                    const year = meta.year || '';
+                    let lifespan = '';
+                    const by = meta.author_born || meta.author_birth_year || meta.birth_year;
+                    const dy = meta.author_died || meta.author_death_year || meta.death_year;
+                    if (by && dy) lifespan = `(${by} - ${dy})`;
+                    else if (author) { const m = author.match(/\((\d{3,4})\s*[-–]\s*(\d{3,4})\)/); if (m) lifespan = `(${m[1]} - ${m[2]})`; }
+                    const rows = [];
+                    if (title) rows.push(`<h2>${escapeHtml(title)}</h2>`);
+                    if (author) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">person<\/span> ${escapeHtml(author)}${lifespan ? ' ' + escapeHtml(lifespan) : ''}</div>`);
+                    if (book) {
+                        const titleEm = `<em>${escapeHtml(book)}</em>`;
+                        const bookHtml = bookUrl ? `<a href="${escapeHtml(bookUrl)}" target="_blank" rel="noopener">${titleEm}</a>` : titleEm;
+                        rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">book_5<\/span> ${bookHtml}</div>`);
+                    }
+                    if (year) rows.push(`<div class="metadata-row"><span class="material-symbols-outlined">calendar_month<\/span> ${escapeHtml(year)}</div>`);
+                    metaDiv.innerHTML = rows.join('');
+                    metaDiv.style.display = rows.length ? 'block' : 'none';
+                    return;
+                }
+            }
+            metaDiv.style.display = 'none';
+        }
+
+        function updateAnnotationDisplay() {
+            if (!analysisResult) return;
+            const showEnderim = document.getElementById('showEnderim').checked;
+            const showBokstavrim = document.getElementById('showBokstavrim').checked;
+            const showAnafor = document.getElementById('showAnafor').checked;
+            const textDisplay = document.getElementById('textDisplay');
+            const lines = analysisResult.text.split('\n');
+            const verseMap = {};
+            if (showEnderim && analysisResult.end_rhymes) {
+                let absoluteLineIndex = 0;
+                for (const stanza of analysisResult.end_rhymes) {
+                    for (const verse of stanza.verses) {
+                        verseMap[absoluteLineIndex] = { rhyme_tag: verse.rhyme_tag.toUpperCase(), last_token: verse.last_token };
+                        absoluteLineIndex++;
+                    }
+                }
+            }
+            let html = ''; let lineNumber = 0; let absoluteLineIndex = 0;
+            lines.forEach((line, index) => {
+                let lineContent = escapeHtml(line);
+                let displayLineNumber = ''; let rhymeTag = '';
+                if (line.trim()) {
+                    displayLineNumber = ++lineNumber;
+                    const verseData = verseMap[absoluteLineIndex];
+                    if (verseData) {
+                        rhymeTag = verseData.rhyme_tag;
+                        if (showEnderim && verseData.last_token) {
+                            const rhymeClass = `highlight-rhyme-${verseData.rhyme_tag.toLowerCase()}`;
+                            const regex = new RegExp(`\\b(${escapeRegex(verseData.last_token)})\\b`, 'gi');
+                            lineContent = lineContent.replace(regex, `<span class="${rhymeClass}">$1</span>`);
+                        }
+                    }
+                    if (showBokstavrim && analysisResult.alliteration) lineContent = applyAlliterationAnnotations(lineContent, index, analysisResult.alliteration);
+                    if (showAnafor && analysisResult.anaphora) lineContent = applyAnaphoraAnnotations(lineContent, index, analysisResult.anaphora);
+                    absoluteLineIndex++;
+                }
+                html += `<div class="text-line">`;
+                html += `<span class="rhyme-tag">${rhymeTag}</span>`;
+                html += `<span class="line-number">${displayLineNumber}</span>`;
+                html += `<span class="line-content">${lineContent || '&nbsp;'}</span>`;
+                html += `</div>`;
+            });
+            textDisplay.innerHTML = html;
+        }
+
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function escapeRegex(str) { return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+        function applyAlliterationAnnotations(lineContent, absoluteLineIndex, alliterations) {
+            if (absoluteLineIndex === undefined || !alliterations || alliterations.length === 0) return lineContent;
+            const alliteratingWords = new Set();
+            for (const allitItem of alliterations) { if (allitItem.line === absoluteLineIndex && allitItem.words) { allitItem.words.forEach(word => alliteratingWords.add(word.toLowerCase())); } }
+            if (alliteratingWords.size > 0) {
+                const words = Array.from(alliteratingWords).map(escapeRegex).join('|');
+                const regex = new RegExp(`\\b(${words})\\b`, 'gi');
+                lineContent = lineContent.replace(regex, (match) => { return '<span class="highlight-bokstavrim">' + match.charAt(0) + '</span>' + match.slice(1); });
+            }
+            return lineContent;
+        }
+        function applyAnaphoraAnnotations(lineContent, absoluteLineIndex, anaphoras) {
+            if (absoluteLineIndex === undefined || !anaphoras || anaphoras.length === 0) return lineContent;
+            for (const anaphora of anaphoras) { if (anaphora.line_id && anaphora.line_id.includes(absoluteLineIndex) && anaphora.phrase) { const regex = new RegExp(`^(${escapeRegex(anaphora.phrase)})\\b`, 'i'); lineContent = lineContent.replace(regex, '<span class="highlight-anafor">$1</span>'); } }
+            return lineContent;
+        }
+    </script>
+</body>
+</html>
