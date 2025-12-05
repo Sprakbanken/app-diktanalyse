@@ -15,7 +15,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #a1dbee 0%, #014d66 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -66,7 +66,7 @@
         
         input[type="text"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #007399;
         }
         
         .radio-group {
@@ -105,7 +105,7 @@
         
         select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #007399;
         }
         
         textarea {
@@ -122,7 +122,7 @@
         
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #007399;
         }
         
         .hidden {
@@ -132,7 +132,7 @@
         button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #34788e 0%, #6fd4f6 100%);
             color: white;
             border: none;
             border-radius: 6px;
@@ -144,7 +144,7 @@
         
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 115, 153, 0.4);
         }
         
         button:active {
@@ -175,15 +175,15 @@
         }
         
         .status.processing {
-            color: #667eea;
+            color: #007399;
         }
         
         .status.completed {
-            color: #28a745;
+            color: #035e18;
         }
         
         .status.error {
-            color: #dc3545;
+            color: #9e3808;
         }
         
         .result-data {
@@ -233,7 +233,7 @@
                 'opsz' 24;
             font-size: 20px;
             line-height: 1;
-            color: #667eea;
+            color: #007399;
         }
         
         .annotation-options label {
@@ -394,21 +394,21 @@
 
         
         .highlight-bokstavrim {
-            background-color: #cce5ff;
+            background-color: #cceef7;
             padding: 2px 4px;
             border-radius: 3px;
             font-weight: bold;
         }
         
         .highlight-anafor {
-            background-color: #cce5ff;
+            background-color: #cceef7;
             padding: 2px 4px;
             border-radius: 3px;
         }
         
         .spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border-top: 3px solid #007399;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -428,7 +428,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #02506a 0%, #027196 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -443,7 +443,7 @@
         
         .info-icon:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 15px rgba(0, 115, 153, 0.4);
         }
         
         .modal {
@@ -503,7 +503,7 @@
         }
         
         .modal h3 {
-            color: #a374d2;
+            color: #006680;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 18px;
@@ -516,7 +516,7 @@
         }
         
         .modal a {
-            color: #667eea;
+            color: #007399;
             text-decoration: none;
         }
         
@@ -555,6 +555,27 @@
 <body>
     <!-- Info Icon -->
     <div class="info-icon" onclick="openInfoModal()" title="Om appen">ℹ</div>
+    <style>
+        /* Accent color for form controls */
+        input[type="radio"],
+        input[type="checkbox"] {
+            accent-color: #007399;
+        }
+
+        /* Optional: focus ring to match theme */
+        input[type="radio"]:focus,
+        input[type="checkbox"]:focus,
+        select:focus {
+            outline: 2px solid #007399;
+            outline-offset: 2px;
+        }
+
+        /* Attempt to style selected options in multi-select (browser-dependent) */
+        select[multiple] option:checked {
+            background-color: #007399;
+            color: #ffffff;
+        }
+    </style>
     
     <!-- Info Modal -->
     <div id="infoModal" class="modal" onclick="closeInfoModal(event)">
