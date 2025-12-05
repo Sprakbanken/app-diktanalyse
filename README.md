@@ -145,35 +145,33 @@ The application will be available at `http://localhost:5000`
 ## Project Structure
 
 ```text
-poetry-analysis-app/
-├── app.py                 # Flask web application
-├── tasks.py              # Background task definitions
-├── config.py             # Configuration settings
-├── pyproject.toml        # Project dependencies (uv/pip)
-├── requirements.txt      # Legacy requirements file
-├── Dockerfile            # Docker container definition
-├── docker-compose.yml    # Docker Compose configuration
-├── .dockerignore         # Docker build exclusions
-├── templates/
-│   └── index.html       # Frontend UI
-├── .env.example         # Environment variables template
+app-diktanalyse/
+├── .dockerignore       # Docker build exclusions
+├── .env.example        # Environment variables template
 ├── .gitignore          # Git ignore rules
-└── README.md           # This file
+├── app.py              # Flask web application
+├── cloudbuild.yaml     # Google Cloud Build configuration
+├── docker-compose.yml  # Docker Compose configuration
+├── Dockerfile          # Docker container definition
+├── LICENSE             # Legal terms for use and redistribution
+├── parse_poems.py      # Script to fetch poem data
+├── pyproject.toml      # Project dependencies (uv/pip)
+├── README.md           # This file
+├── static
+│   ├── NB_logo_sort.svg   
+│   └── poems.json      # Poem data
+├── tasks.py            # backend operations used by the app
+├── templates
+│   └── index.html      # Frontend UI
+└── test_annotations.py # visual testing of the operations
+
 ```
 
 ## Customization
 
-### Adding New Computational Operations
+### Adding new backend operations
 
-Edit `tasks.py` and modify the `process_computation` function:
-
-```python
-@celery_app.task(name='tasks.process_computation')
-def process_computation(user_input, task_id):
-    # Add your custom computational logic here
-    result = your_custom_function(user_input)
-    return result
-```
+Edit `tasks.py`
 
 ### Modifying the UI
 
@@ -181,9 +179,10 @@ Edit `templates/index.html` to customize the frontend appearance and behavior.
 
 ### Configuration
 
-Modify `config.py` or set environment variables in `.env` to change:
+Set environment variables in `.env` to change:
 
 - Flask settings (SECRET_KEY, DEBUG mode)
+- Google Cloud Build settings
 
 ## Production Deployment
 
@@ -192,7 +191,7 @@ Modify `config.py` or set environment variables in `.env` to change:
 1. Build the production image:
 
    ```bash
-   docker build -t poetry-analysis-app:latest .
+   docker build -t diktanalyse:latest .
    ```
 
 2. Run with production settings:
@@ -203,7 +202,7 @@ Modify `config.py` or set environment variables in `.env` to change:
      -e FLASK_DEBUG=False \
      -e MAX_WORKERS=8 \
      --name poetry-app \
-     poetry-analysis-app:latest
+     diktanalyse:latest
    ```
 
 3. Or use Docker Compose with production overrides:
@@ -220,8 +219,8 @@ For production use without Docker:
 2. Use a production WSGI server (e.g., Gunicorn):
 
    ```bash
-   pip install gunicorn
-   gunicorn -w 4 -b 0.0.0.0:5000 app:app
+   uv pip install gunicorn
+   uv run gunicorn -w 4 -b 0.0.0.0:5000 app:app
    ```
 
 3. Consider using a process manager (e.g., Supervisor) to keep the app running
