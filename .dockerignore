@@ -6,6 +6,7 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+.python-version
 
 # Virtual environments
 .venv/
@@ -33,18 +34,18 @@ uv.lock
 .env.local
 
 # Documentation
-README.md
 .github/
+docs/
 
-# Docker
-Dockerfile
-.dockerignore
-docker-compose.yml
+# Docker (keep these to build context)
+# Dockerfile
+# .dockerignore
+# docker-compose.yml
+.cloudignore
 
 # Testing
-tests/
-*.test
-*.spec
+.pytest_cache/
+coverage/
 
 # Build artifacts
 dist/

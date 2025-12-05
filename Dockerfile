@@ -13,7 +13,7 @@ RUN uv venv
 RUN uv pip install -r pyproject.toml
 
 # Copy application code
-COPY app.py tasks.py config.py ./
+COPY app.py tasks.py ./
 COPY templates ./templates/
 COPY static/* ./static/
 

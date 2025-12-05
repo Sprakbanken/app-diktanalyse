@@ -208,3 +208,5 @@ __marimo__/
 
 .github/copilot-instructions.md
 templates/index.html.backup
+
+uv.lock

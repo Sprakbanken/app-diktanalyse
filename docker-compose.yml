@@ -1,6 +1,7 @@
 services:
   app:
     build: .
+    image: diktanalyse
     ports:
       - "5000:5000"
     environment:
@@ -10,7 +11,6 @@ services:
       # Mount source code for development (hot reload)
       - ./app.py:/app/app.py
       - ./tasks.py:/app/tasks.py
-      - ./config.py:/app/config.py
       - ./templates:/app/templates
       - ./static:/app/static
     restart: unless-stopped
