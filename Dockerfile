@@ -8,9 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
 
 # Copy application code
-COPY app/*.py ./
-COPY app/templates/ ./templates/
-COPY app/static ./static/
+COPY src /app/src
 COPY README.md ./
 COPY pyproject.toml ./
 
@@ -30,4 +28,5 @@ EXPOSE $PORT
 
 # Run the application with Gunicorn (production)
 # Use env vars PORT and GUNICORN_WORKERS to configure
-CMD ["bash", "-c", "uv run gunicorn -w ${GUNICORN_WORKERS} -b 0.0.0.0:${PORT} app:app"]
+#CMD ["bash", "-c", "uv run gunicorn -w ${GUNICORN_WORKERS} -b 0.0.0.0:${PORT} app:app"]
+CMD ["uv", "run", "--no-sync", "gunicorn", "--bind", "0.0.0.0:5000", "diktanalyse.app:app"]

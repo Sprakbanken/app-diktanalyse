@@ -28,5 +28,7 @@ steps:
    - '5000'
    - '--concurrency'
    - '40'
+   - '--set-env-vars'
+   - 'SCRIPT_NAME=/diktanalyse'
 images:
 - 'gcr.io/$PROJECT_ID/diktanalyse:latest'

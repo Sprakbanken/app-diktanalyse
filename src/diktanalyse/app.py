@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import cross_origin
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from tasks import process_text
+from diktanalyse.tasks import process_text
 import json
 import requests
 
@@ -66,11 +67,13 @@ def fetch_poem_text_from_poetree(title: str, author: str) -> str:
 
 
 @app.route("/")
+@cross_origin()
 def index():
     return render_template("index.html")
 
 
 @app.route("/submit", methods=["POST"])
+@cross_origin()
 def submit_task():
     """Submit a computational task to the background worker"""
     data = request.get_json()
@@ -109,6 +112,7 @@ def submit_task():
 
 
 @app.route("/result/<task_id>")
+@cross_origin()
 def get_result(task_id):
     """Get the result of a computational task"""
     # Check if result is available
@@ -122,4 +126,4 @@ def get_result(task_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5010)

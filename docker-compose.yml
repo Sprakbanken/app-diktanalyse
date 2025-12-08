@@ -9,8 +9,8 @@ services:
       - MAX_WORKERS=4
     volumes:
       # Mount source code for development (hot reload)
-      - ./app/app.py:/app/app.py
-      - ./app/tasks.py:/app/tasks.py
-      - ./app/templates:/app/templates
-      - ./app/static:/app/static
+      - ./src/diktanalyse/app.py:/app/app.py
+      - ./src/diktanalyse/tasks.py:/app/tasks.py
+      - ./src/diktanalyse/templates:/app/templates
+      - ./src/diktanalyse/static:/app/static
     restart: unless-stopped

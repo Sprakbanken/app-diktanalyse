@@ -32,6 +32,22 @@ dependencies = [
 ]
 
 [[packages]]
+name = "flask-cors"
+version = "6.0.1"
+requires-python = "<4.0,>=3.9"
+sdist = {name = "flask_cors-6.0.1.tar.gz", url = "https://files.pythonhosted.org/packages/76/37/bcfa6c7d5eec777c4c7cf45ce6b27631cebe5230caf88d85eadd63edd37a/flask_cors-6.0.1.tar.gz", hashes = {sha256 = "d81bcb31f07b0985be7f48406247e9243aced229b7747219160a0559edd678db"}}
+wheels = [
+    {name = "flask_cors-6.0.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/17/f8/01bf35a3afd734345528f98d0353f2a978a476528ad4d7e78b70c4d149dd/flask_cors-6.0.1-py3-none-any.whl",hashes = {sha256 = "c7b2cbfb1a31aa0d2e5341eea03a6805349f7a61647daee1a15c46bbe981494c"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "flask>=0.9",
+    "Werkzeug>=0.7",
+]
+
+[[packages]]
 name = "gunicorn"
 version = "23.0.0"
 requires-python = ">=3.7"
@@ -197,72 +213,18 @@ marker = "\"default\" in dependency_groups"
 dependencies = []
 
 [[packages]]
-name = "blinker"
-version = "1.9.0"
+name = "werkzeug"
+version = "3.1.4"
 requires-python = ">=3.9"
-sdist = {name = "blinker-1.9.0.tar.gz", url = "https://files.pythonhosted.org/packages/21/28/9b3f50ce0e048515135495f198351908d99540d69bfdc8c1d15b73dc55ce/blinker-1.9.0.tar.gz", hashes = {sha256 = "b4ce2265a7abece45e7cc896e98dbebe6cead56bcf805a3d23136d145f5445bf"}}
+sdist = {name = "werkzeug-3.1.4.tar.gz", url = "https://files.pythonhosted.org/packages/45/ea/b0f8eeb287f8df9066e56e831c7824ac6bab645dd6c7a8f4b2d767944f9b/werkzeug-3.1.4.tar.gz", hashes = {sha256 = "cd3cd98b1b92dc3b7b3995038826c68097dcb16f9baa63abe35f20eafeb9fe5e"}}
 wheels = [
-    {name = "blinker-1.9.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl",hashes = {sha256 = "ba0efaa9080b619ff2f3459d1d500c57bddea4a6b424b60a91141db6fd2f08bc"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = []
-
-[[packages]]
-name = "certifi"
-version = "2025.11.12"
-requires-python = ">=3.7"
-sdist = {name = "certifi-2025.11.12.tar.gz", url = "https://files.pythonhosted.org/packages/a2/8c/58f469717fa48465e4a50c014a0400602d3c437d7c0c468e17ada824da3a/certifi-2025.11.12.tar.gz", hashes = {sha256 = "d8ab5478f2ecd78af242878415affce761ca6bc54a22a27e026d7c25357c3316"}}
-wheels = [
-    {name = "certifi-2025.11.12-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/70/7d/9bc192684cea499815ff478dfcdc13835ddf401365057044fb721ec6bddb/certifi-2025.11.12-py3-none-any.whl",hashes = {sha256 = "97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = []
-
-[[packages]]
-name = "click"
-version = "8.3.1"
-requires-python = ">=3.10"
-sdist = {name = "click-8.3.1.tar.gz", url = "https://files.pythonhosted.org/packages/3d/fa/656b739db8587d7b5dfa22e22ed02566950fbfbcdc20311993483657a5c0/click-8.3.1.tar.gz", hashes = {sha256 = "12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a"}}
-wheels = [
-    {name = "click-8.3.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/98/78/01c019cdb5d6498122777c1a43056ebb3ebfeef2076d9d026bfe15583b2b/click-8.3.1-py3-none-any.whl",hashes = {sha256 = "981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6"}},
+    {name = "werkzeug-3.1.4-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/2f/f9/9e082990c2585c744734f85bec79b5dae5df9c974ffee58fe421652c8e91/werkzeug-3.1.4-py3-none-any.whl",hashes = {sha256 = "2ad50fb9ed09cc3af22c54698351027ace879a0b60a3b5edf5730b2f7d876905"}},
 ]
 marker = "\"default\" in dependency_groups"
 
 [packages.tool.pdm]
 dependencies = [
-    "colorama; platform_system == \"Windows\"",
-]
-
-[[packages]]
-name = "itsdangerous"
-version = "2.2.0"
-requires-python = ">=3.8"
-sdist = {name = "itsdangerous-2.2.0.tar.gz", url = "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz", hashes = {sha256 = "e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173"}}
-wheels = [
-    {name = "itsdangerous-2.2.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl",hashes = {sha256 = "c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = []
-
-[[packages]]
-name = "jinja2"
-version = "3.1.6"
-requires-python = ">=3.7"
-sdist = {name = "jinja2-3.1.6.tar.gz", url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hashes = {sha256 = "0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"}}
-wheels = [
-    {name = "jinja2-3.1.6-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",hashes = {sha256 = "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"}},
-]
-marker = "\"default\" in dependency_groups"
-
-[packages.tool.pdm]
-dependencies = [
-    "MarkupSafe>=2.0",
+    "markupsafe>=2.1.1",
 ]
 
 [[packages]]
@@ -333,18 +295,72 @@ marker = "\"default\" in dependency_groups"
 dependencies = []
 
 [[packages]]
-name = "werkzeug"
-version = "3.1.4"
+name = "blinker"
+version = "1.9.0"
 requires-python = ">=3.9"
-sdist = {name = "werkzeug-3.1.4.tar.gz", url = "https://files.pythonhosted.org/packages/45/ea/b0f8eeb287f8df9066e56e831c7824ac6bab645dd6c7a8f4b2d767944f9b/werkzeug-3.1.4.tar.gz", hashes = {sha256 = "cd3cd98b1b92dc3b7b3995038826c68097dcb16f9baa63abe35f20eafeb9fe5e"}}
+sdist = {name = "blinker-1.9.0.tar.gz", url = "https://files.pythonhosted.org/packages/21/28/9b3f50ce0e048515135495f198351908d99540d69bfdc8c1d15b73dc55ce/blinker-1.9.0.tar.gz", hashes = {sha256 = "b4ce2265a7abece45e7cc896e98dbebe6cead56bcf805a3d23136d145f5445bf"}}
 wheels = [
-    {name = "werkzeug-3.1.4-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/2f/f9/9e082990c2585c744734f85bec79b5dae5df9c974ffee58fe421652c8e91/werkzeug-3.1.4-py3-none-any.whl",hashes = {sha256 = "2ad50fb9ed09cc3af22c54698351027ace879a0b60a3b5edf5730b2f7d876905"}},
+    {name = "blinker-1.9.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/10/cb/f2ad4230dc2eb1a74edf38f1a38b9b52277f75bef262d8908e60d957e13c/blinker-1.9.0-py3-none-any.whl",hashes = {sha256 = "ba0efaa9080b619ff2f3459d1d500c57bddea4a6b424b60a91141db6fd2f08bc"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = []
+
+[[packages]]
+name = "certifi"
+version = "2025.11.12"
+requires-python = ">=3.7"
+sdist = {name = "certifi-2025.11.12.tar.gz", url = "https://files.pythonhosted.org/packages/a2/8c/58f469717fa48465e4a50c014a0400602d3c437d7c0c468e17ada824da3a/certifi-2025.11.12.tar.gz", hashes = {sha256 = "d8ab5478f2ecd78af242878415affce761ca6bc54a22a27e026d7c25357c3316"}}
+wheels = [
+    {name = "certifi-2025.11.12-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/70/7d/9bc192684cea499815ff478dfcdc13835ddf401365057044fb721ec6bddb/certifi-2025.11.12-py3-none-any.whl",hashes = {sha256 = "97de8790030bbd5c2d96b7ec782fc2f7820ef8dba6db909ccf95449f2d062d4b"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = []
+
+[[packages]]
+name = "click"
+version = "8.3.1"
+requires-python = ">=3.10"
+sdist = {name = "click-8.3.1.tar.gz", url = "https://files.pythonhosted.org/packages/3d/fa/656b739db8587d7b5dfa22e22ed02566950fbfbcdc20311993483657a5c0/click-8.3.1.tar.gz", hashes = {sha256 = "12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a"}}
+wheels = [
+    {name = "click-8.3.1-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/98/78/01c019cdb5d6498122777c1a43056ebb3ebfeef2076d9d026bfe15583b2b/click-8.3.1-py3-none-any.whl",hashes = {sha256 = "981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6"}},
 ]
 marker = "\"default\" in dependency_groups"
 
 [packages.tool.pdm]
 dependencies = [
-    "markupsafe>=2.1.1",
+    "colorama; platform_system == \"Windows\"",
+]
+
+[[packages]]
+name = "itsdangerous"
+version = "2.2.0"
+requires-python = ">=3.8"
+sdist = {name = "itsdangerous-2.2.0.tar.gz", url = "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz", hashes = {sha256 = "e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173"}}
+wheels = [
+    {name = "itsdangerous-2.2.0-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl",hashes = {sha256 = "c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = []
+
+[[packages]]
+name = "jinja2"
+version = "3.1.6"
+requires-python = ">=3.7"
+sdist = {name = "jinja2-3.1.6.tar.gz", url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hashes = {sha256 = "0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d"}}
+wheels = [
+    {name = "jinja2-3.1.6-py3-none-any.whl",url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl",hashes = {sha256 = "85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67"}},
+]
+marker = "\"default\" in dependency_groups"
+
+[packages.tool.pdm]
+dependencies = [
+    "MarkupSafe>=2.0",
 ]
 
 [[packages]]
@@ -941,7 +957,7 @@ marker = "\"default\" in dependency_groups"
 dependencies = []
 
 [tool.pdm]
-hashes = {sha256 = "ac7064fdde23ed9381d79b3bbc17a99aa5f0723524279848838f5ef6c3e83e65"}
+hashes = {sha256 = "ae1c060b24d985bd4789666390877438faf7a126146ce7df23aa4de4d89e57ab"}
 strategy = ["inherit_metadata", "static_urls"]
 
 [[tool.pdm.targets]]
