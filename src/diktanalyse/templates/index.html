@@ -672,7 +672,7 @@
         // Load poems from JSON file
         async function loadPoems() {
             try {
-                const response = await fetch('/static/poems.json');
+                const response = await fetch('{{ url_for('static', filename='poems.json') }}');
                 const poemData = await response.json();
 
                 // Store poem data
@@ -769,7 +769,8 @@
 
             try {
                 // Submit task
-                const response = await fetch('/submit', {
+                const submitUrl = "{{ url_for('submit_task') }}";
+                const response = await fetch(submitUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -801,7 +802,9 @@
             if (!currentTaskId) return;
 
             try {
-                const response = await fetch(`/result/${currentTaskId}`);
+                const resultUrlBase = "{{ url_for('get_result', task_id='__TASK__') }}";
+                const resultUrl = resultUrlBase.replace('__TASK__', currentTaskId);
+                const response = await fetch(resultUrl);
                 const data = await response.json();
 
                 if (data.status === 'completed') {
