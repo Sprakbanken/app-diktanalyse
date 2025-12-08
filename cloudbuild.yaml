@@ -17,6 +17,8 @@ steps:
    - 'gcr.io/$PROJECT_ID/diktanalyse:latest'
    - '--region'
    - 'europe-north1'
+   - '--port'
+   - '8501'
    - '--platform'
    - 'managed'
    - '--allow-unauthenticated'
@@ -24,8 +26,6 @@ steps:
    - '1'  # Modifiser denne opp eller ned ved behov
    - '--memory'
    - '512Mi'  # Modifiser denne opp eller ned ved behov
-   - '--port'
-   - '5000'
    - '--concurrency'
    - '40'
    - '--set-env-vars'

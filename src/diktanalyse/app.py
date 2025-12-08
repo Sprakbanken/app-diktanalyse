@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_cors import cross_origin
 import uuid
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from diktanalyse.tasks import process_text
 import json
@@ -9,7 +10,7 @@ import requests
 POETREE_API_BASE = "https://versologie.cz/poetree/api"
 
 app = Flask(__name__)
-
+app_dir = Path(__file__).parent
 # Store task results and status in memory
 task_results = {}
 task_status = {}
@@ -20,7 +21,7 @@ executor = ThreadPoolExecutor(max_workers=4)
 # Load poem metadata for dropdown labels
 poems_metadata = {}
 try:
-    with open("static/poems.json", "r", encoding="utf-8") as f:
+    with open(app_dir.joinpath("static", "poems.json"), "r", encoding="utf-8") as f:
         poems_metadata = json.load(f)
         print(f"Loaded {len(poems_metadata)} poems metadata entries")
 except Exception as e:
@@ -126,4 +127,5 @@ def get_result(task_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5010)
+    # Cloud Run requires listening on the port provided via $PORT
+    app.run(host="0.0.0.0", port=5011)
