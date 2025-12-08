@@ -199,7 +199,9 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
                 ns,
             )
             if bibl_elem is not None:
-                book_url = f"https://www.nb.no/items/URN:NBN:{bibl_elem.get('xml:id', '')}"
+                book_url = (
+                    f"https://www.nb.no/items/URN:NBN:{bibl_elem.get('xml:id', '')}"
+                )
 
         def extract_lg_text(lg_elem):
             # If this lg contains stanza children, build text per stanza and join with two newlines
@@ -208,11 +210,11 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
                 stanza_texts = []
                 for stanza in stanza_children:
                     stanza_lines = []
-                    for l in stanza.findall("tei:l", ns):
-                        if l.text:
-                            stanza_lines.append(l.text.strip())
-                        if l.tail and l.tail.strip():
-                            stanza_lines.append(l.tail.strip())
+                    for line in stanza.findall("tei:l", ns):
+                        if line.text:
+                            stanza_lines.append(line.text.strip())
+                        if line.tail and line.tail.strip():
+                            stanza_lines.append(line.tail.strip())
                     if not stanza_lines:
                         # Fallback stanza text using lb-based splitting
                         parts = []
@@ -233,11 +235,11 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
 
             # Otherwise, collect line elements directly under lg
             lines = []
-            for l in lg_elem.findall("tei:l", ns):
-                if l.text:
-                    lines.append(l.text.strip())
-                if l.tail and l.tail.strip():
-                    lines.append(l.tail.strip())
+            for line in lg_elem.findall("tei:l", ns):
+                if line.text:
+                    lines.append(line.text.strip())
+                if line.tail and line.tail.strip():
+                    lines.append(line.tail.strip())
             if not lines:
                 # Fallback: join all text under lg with newlines on lb
                 parts = []

@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, jsonify
 import uuid
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from tasks import process_text
 import json

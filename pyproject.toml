@@ -12,3 +12,15 @@ dependencies = [
     "requests>=2.32.0",
     "gunicorn>=23.0.0",
 ]
+authors = [
+    {name = "Ingerid Dale", email = "ingerid.dale@nb.no"},
+]
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
