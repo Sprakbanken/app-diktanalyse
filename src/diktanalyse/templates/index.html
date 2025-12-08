@@ -672,7 +672,12 @@
         // Load poems from JSON file
         async function loadPoems() {
             try {
-                const response = await fetch('{{ url_for("static", filename="poems.json") }}');
+                const response = await fetch('static/poems.json');
+                const ct = response.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error('Unexpected response (not JSON): ' + text.slice(0, 200));
+                }
                 const poemData = await response.json();
 
                 // Store poem data
@@ -768,9 +773,8 @@
             analysisResult = null;
 
             try {
-                // Submit task
-                const submitUrl = "{{ url_for('submit_task') }}";
-                const response = await fetch(submitUrl, {
+                // Submit task (relative path for subpath deployments)
+                const response = await fetch('submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -778,6 +782,11 @@
                     body: JSON.stringify({ input: input })
                 });
 
+                const ct = response.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error('Unexpected response (not JSON): ' + text.slice(0, 200));
+                }
                 const data = await response.json();
 
                 if (response.ok) {
@@ -802,9 +811,13 @@
             if (!currentTaskId) return;
 
             try {
-                const resultUrlBase = "{{ url_for('get_result', task_id='__TASK__') }}";
-                const resultUrl = resultUrlBase.replace('__TASK__', currentTaskId);
-                const response = await fetch(resultUrl);
+                // Poll result (relative path for subpath deployments)
+                const response = await fetch(`result/${currentTaskId}`);
+                const ct = response.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error('Unexpected response (not JSON): ' + text.slice(0, 200));
+                }
                 const data = await response.json();
 
                 if (data.status === 'completed') {
