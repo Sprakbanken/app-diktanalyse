@@ -672,7 +672,7 @@
         // Load poems from JSON file
         async function loadPoems() {
             try {
-                const response = await fetch('{{ url_for('static', filename='poems.json') }}');
+                const response = await fetch('{{ url_for("static", filename="poems.json") }}');
                 const poemData = await response.json();
 
                 // Store poem data
