@@ -20,7 +20,7 @@ En app for å automatisk annotere enderim, anaforer og bokstavrim i dikt eller a
    cp .env.example .env
    ```
 
-   Endre miljøvariabler i `.env` for å sette Flask-innstillinger og Google Cloud Build-innstilllinger.
+   Endre miljøvariabler i `.env` for å sette Flask-innstillinger og Google Cloud Build-innstillinger.
 
 ## Kjør appen
 
@@ -49,7 +49,7 @@ docker compose down
 ### Lokal utvikling (uv)
 
 ```bash
-uv run python app.py
+uv run python src/diktanalyse/app.py
 ```
 
 Appen blir tilgjengelig fra `http://localhost:5000`
