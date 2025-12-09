@@ -3,14 +3,14 @@ services:
     build: .
     image: diktanalyse
     ports:
-      - "5000:5000"
+      - "5000:8501"
     environment:
       - FLASK_DEBUG=True
       - MAX_WORKERS=4
     volumes:
       # Mount source code for development (hot reload)
-      - ./src/diktanalyse/app.py:/app/app.py
-      - ./src/diktanalyse/tasks.py:/app/tasks.py
-      - ./src/diktanalyse/templates:/app/templates
-      - ./src/diktanalyse/static:/app/static
+      - ./src/diktanalyse/app.py:/app/src/diktanalyse/app.py
+      - ./src/diktanalyse/tasks.py:/app/src/diktanalyse/tasks.py
+      - ./src/diktanalyse/templates:/app/src/diktanalyse/templates
+      - ./src/diktanalyse/static:/app/src/diktanalyse/static
     restart: unless-stopped
