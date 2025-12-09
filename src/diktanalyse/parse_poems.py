@@ -4,6 +4,7 @@ Creates a JSON file with poem data for the dropdown menu.
 """
 
 import json
+from pathlib import Path
 import requests
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional
@@ -513,12 +514,14 @@ def main():
     for label in random.sample(tuple(poem_data.keys()), 5):
         print(f"  - {label}")
 
-    # Save to JSON file for use in web app
-    output_file = "static/poems.json"
-    with open(output_file, "w", encoding="utf-8") as f:
+    # Save to JSON file for use in web app (path anchored to this module)
+    base_dir = Path(__file__).resolve().parent
+    output_path = base_dir / "static" / "poems.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
         json.dump(poem_data, f, ensure_ascii=False, indent=2)
 
-    print(f"\nSaved poem data to {output_file}")
+    print(f"\nSaved poem data to {output_path}")
 
 
 if __name__ == "__main__":
