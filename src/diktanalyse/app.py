@@ -1,15 +1,16 @@
 from flask import Flask, render_template, request, jsonify
+from flask_cors import cross_origin
 import uuid
-import threading
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
-from tasks import process_text
+from diktanalyse.tasks import process_text
 import json
 import requests
 
 POETREE_API_BASE = "https://versologie.cz/poetree/api"
 
 app = Flask(__name__)
-
+app_dir = Path(__file__).parent
 # Store task results and status in memory
 task_results = {}
 task_status = {}
@@ -20,7 +21,7 @@ executor = ThreadPoolExecutor(max_workers=4)
 # Load poem metadata for dropdown labels
 poems_metadata = {}
 try:
-    with open("static/poems.json", "r", encoding="utf-8") as f:
+    with open(app_dir.joinpath("static", "poems.json"), "r", encoding="utf-8") as f:
         poems_metadata = json.load(f)
         print(f"Loaded {len(poems_metadata)} poems metadata entries")
 except Exception as e:
@@ -67,11 +68,13 @@ def fetch_poem_text_from_poetree(title: str, author: str) -> str:
 
 
 @app.route("/")
+@cross_origin()
 def index():
     return render_template("index.html")
 
 
 @app.route("/submit", methods=["POST"])
+@cross_origin()
 def submit_task():
     """Submit a computational task to the background worker"""
     data = request.get_json()
@@ -110,6 +113,7 @@ def submit_task():
 
 
 @app.route("/result/<task_id>")
+@cross_origin()
 def get_result(task_id):
     """Get the result of a computational task"""
     # Check if result is available
@@ -123,4 +127,5 @@ def get_result(task_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    # Cloud Run requires listening on the port provided via $PORT
+    app.run(host="0.0.0.0", port=5011)

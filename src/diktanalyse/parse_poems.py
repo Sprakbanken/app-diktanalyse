@@ -4,6 +4,8 @@ Creates a JSON file with poem data for the dropdown menu.
 """
 
 import json
+from pathlib import Path
+from urllib.parse import quote
 import requests
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional
@@ -199,7 +201,8 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
                 ns,
             )
             if bibl_elem is not None:
-                book_url = f"https://www.nb.no/items/URN:NBN:{bibl_elem.get('xml:id', '')}"
+                book_id = bibl_elem.get("{http://www.w3.org/XML/1998/namespace}id", "")
+                book_url = f"https://www.nb.no/items/URN:NBN:{book_id}"
 
         def extract_lg_text(lg_elem):
             # If this lg contains stanza children, build text per stanza and join with two newlines
@@ -208,11 +211,11 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
                 stanza_texts = []
                 for stanza in stanza_children:
                     stanza_lines = []
-                    for l in stanza.findall("tei:l", ns):
-                        if l.text:
-                            stanza_lines.append(l.text.strip())
-                        if l.tail and l.tail.strip():
-                            stanza_lines.append(l.tail.strip())
+                    for line in stanza.findall("tei:l", ns):
+                        if line.text:
+                            stanza_lines.append(line.text.strip())
+                        if line.tail and line.tail.strip():
+                            stanza_lines.append(line.tail.strip())
                     if not stanza_lines:
                         # Fallback stanza text using lb-based splitting
                         parts = []
@@ -233,11 +236,11 @@ def parse_tei_xml(xml_content: str, file_name: str) -> Optional[Dict]:
 
             # Otherwise, collect line elements directly under lg
             lines = []
-            for l in lg_elem.findall("tei:l", ns):
-                if l.text:
-                    lines.append(l.text.strip())
-                if l.tail and l.tail.strip():
-                    lines.append(l.tail.strip())
+            for line in lg_elem.findall("tei:l", ns):
+                if line.text:
+                    lines.append(line.text.strip())
+                if line.tail and line.tail.strip():
+                    lines.append(line.tail.strip())
             if not lines:
                 # Fallback: join all text under lg with newlines on lb
                 parts = []
@@ -296,6 +299,7 @@ def enrich_poem_data_from_github(poem_collections: dict) -> Dict[str, Dict]:
         # Add each poem from the collection
         for idx, poem_title in enumerate(book_data["poems"]):
             dropdown_label = f"{poem_title} - {author}"
+            poem_url = f"{book_data['book_url']}?searchText={quote(poem_title)}"
             poem_data[dropdown_label] = {
                 "file": file_name,
                 "poem_id": (
@@ -309,7 +313,7 @@ def enrich_poem_data_from_github(poem_collections: dict) -> Dict[str, Dict]:
                 "year": book_data["year"],
                 "poem_index": idx,
                 "source": "github",
-                "book_url": book_data.get("book_url", ""),
+                "book_url": poem_url,
                 "text": (
                     book_data.get("poems_texts", [""] * len(book_data["poems"]))[idx]
                     if idx < len(book_data.get("poems_texts", []))
@@ -511,12 +515,14 @@ def main():
     for label in random.sample(tuple(poem_data.keys()), 5):
         print(f"  - {label}")
 
-    # Save to JSON file for use in web app
-    output_file = "static/poems.json"
-    with open(output_file, "w", encoding="utf-8") as f:
+    # Save to JSON file for use in web app (path anchored to this module)
+    base_dir = Path(__file__).resolve().parent
+    output_path = base_dir / "static" / "poems.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as f:
         json.dump(poem_data, f, ensure_ascii=False, indent=2)
 
-    print(f"\nSaved poem data to {output_file}")
+    print(f"\nSaved poem data to {output_path}")
 
 
 if __name__ == "__main__":
