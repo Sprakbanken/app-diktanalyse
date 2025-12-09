@@ -27,7 +27,7 @@ steps:
    - '--memory'
    - '512Mi'  # Modifiser denne opp eller ned ved behov
    - '--concurrency'
-   - '40'
+   - '4'
    - '--set-env-vars'
    - 'SCRIPT_NAME=/diktanalyse'
 images:
