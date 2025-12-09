@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 # Copy application code
 COPY src /app/src
 COPY README.md ./
-COPY uv.lock
+COPY uv.lock ./
 COPY pyproject.toml ./
 
 # Install Python dependencies (from pyproject.toml)
