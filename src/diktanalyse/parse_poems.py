@@ -5,6 +5,7 @@ Creates a JSON file with poem data for the dropdown menu.
 
 import json
 from pathlib import Path
+from urllib.parse import quote
 import requests
 import xml.etree.ElementTree as ET
 from typing import Dict, List, Optional
@@ -298,6 +299,7 @@ def enrich_poem_data_from_github(poem_collections: dict) -> Dict[str, Dict]:
         # Add each poem from the collection
         for idx, poem_title in enumerate(book_data["poems"]):
             dropdown_label = f"{poem_title} - {author}"
+            poem_url = f"{book_data['book_url']}?searchText={quote(poem_title)}"
             poem_data[dropdown_label] = {
                 "file": file_name,
                 "poem_id": (
@@ -311,7 +313,7 @@ def enrich_poem_data_from_github(poem_collections: dict) -> Dict[str, Dict]:
                 "year": book_data["year"],
                 "poem_index": idx,
                 "source": "github",
-                "book_url": book_data.get("book_url", ""),
+                "book_url": poem_url,
                 "text": (
                     book_data.get("poems_texts", [""] * len(book_data["poems"]))[idx]
                     if idx < len(book_data.get("poems_texts", []))
