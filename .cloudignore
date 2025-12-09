@@ -10,11 +10,9 @@ wheels/
 .venv/
 .env
 .python-version
-uv.lock
+
 
 # Other data files
 .ruff_cache/
 _ignore/
 deploy.sh
-
-
