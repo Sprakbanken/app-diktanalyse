@@ -10,11 +10,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 # Copy application code
 COPY src /app/src
 COPY README.md ./
+COPY uv.lock
 COPY pyproject.toml ./
 
 # Install Python dependencies (from pyproject.toml)
 RUN uv venv
-RUN uv sync --no-dev --compile-bytecode
+RUN uv sync --frozen --no-dev --compile-bytecode
 
 # Expose port 8501
 EXPOSE 8501
